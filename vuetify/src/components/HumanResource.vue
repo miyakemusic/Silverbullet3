@@ -1,0 +1,3 @@
+<template>
+	Human Resource
+</template>
