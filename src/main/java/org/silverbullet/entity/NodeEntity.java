@@ -1,4 +1,4 @@
-package org.silverbullet;
+package org.silverbullet.entity;
 
 import java.util.List;
 import jakarta.persistence.CascadeType;
@@ -30,6 +30,8 @@ public class NodeEntity {
 	public NodeEntity() {}
 	
 	private String name;
+	
+	private String type;
 	
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parentNode", cascade = CascadeType.ALL)
 	@OrderBy("name ASC")

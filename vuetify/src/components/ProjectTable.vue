@@ -1,150 +1,185 @@
 <template>
-  <v-card flat>
-    <v-card-title class="d-flex align-center pe-2">
-      <v-icon icon="mdi-video-input-component"></v-icon> &nbsp;
-      Find a Graphics Card
+	{{ projectName }}
+	<v-row>
+		<v-col>
+			<v-card width="500" variant="outlined" class="ma-2">
+				<ProgressTable :projectid="projectid"></ProgressTable>
+			</v-card>
+		</v-col>
+		<v-col>
+			<v-card width="300" variant="outlined" class="ma-2">
+				<ProgressChart :projectid="projectid" :nodeid="selectedNode"></ProgressChart>
+			</v-card>
+		</v-col>
+		<v-col>
+			<v-card width="600" variant="outlined" class="ma-2">
+				Test Progress (Time)
+				<v-table density="compact">
+					<thead>
+						<tr>
+							<td>Start</td><td>Deadline</td><td>Estimated Completion</td><td>Progress</td><td>Delay days</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>{{progress.date.startTest}}</td>
+							<td>{{progress.date.deadline }})</td>
+							<td><v-chip color="red"	label>{{progress.date.estimatedCompletionDate  }}</v-chip></td>
+							<td><v-chip color="red"	label>{{progress.date.progressStatus  }}</v-chip></td>
+							<td><v-chip color="red"	label>{{progress.date.diffDays  }}</v-chip></td>
+						</tr>
+					</tbody>
+				</v-table>
+			</v-card>
+		</v-col>
+		<v-col>
+			<v-card width="300" variant="outlined" class="ma-2">
+				Test Progress (Cost)
+				<v-table density="compact">
+					<thead>
+						<tr>
+							<td>Budget</td><td>Expenditure</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>{{ progress.cost.unit }} {{progress.cost.budget}}</td>
+							<td>{{progress.cost.unit }} {{ progress.cost.expenditure }} ({{ progress.cost.expenditure*100/progress.cost.budget }} %)</td>
+						</tr>
+					</tbody>
+				</v-table>
+			</v-card>
+		</v-col>
+	</v-row>	
+	
+	<v-row>
+		<v-col>
+			<v-card width="400" variant="outlined" class="ma-2">
+				DUT
+				<v-table density="compact">
+					<thead>
+						<tr>
+							<td>Type</td><td>Quantity</td><td>Completed</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="(item, index) in duts" :key="id">
+						  <td>{{ item.name }}</td>
+						  <td>{{ item.quantity }}</td>
+						  <td>{{ item.done }} ( {{ item.done *100 / item.quantity }} %)</td>
 
-      <v-spacer></v-spacer>
+						</tr>
+					</tbody>
+				</v-table>
+			</v-card>
+		</v-col>		
+		
+		<v-col>
+			<v-card width="400" variant="outlined" class="ma-2">
+				Testers
+				<v-data-table 
+					:items="testers" hide-default-footer density="compact" @click:row="handleClick">
+				</v-data-table>
+			</v-card>
+		</v-col>
+		
+		<v-col>
+			<v-card width="400" variant="outlined" class="ma-2">
+				Human Resource
+				<v-data-table 
+					:items="humanresource" hide-default-footer density="compact" @click:row="handleClick">
+				</v-data-table>
+			</v-card>
+		</v-col>
+	</v-row>
+	
 
-      <v-text-field
-        v-model="search"
-        density="compact"
-        label="Search"
-        prepend-inner-icon="mdi-magnify"
-        variant="solo-filled"
-        flat
-        hide-details
-        single-line
-      ></v-text-field>
-    </v-card-title>
+	<ProgressLineChart></ProgressLineChart>
 
-    <v-divider></v-divider>
-    <v-data-table v-model:search="search" :items="items">
-      <template v-slot:header.stock>
-        <div class="text-end">Stock</div>
-      </template>
-
-      <template v-slot:item.image="{ item }">
-        <v-card class="my-2" elevation="2" rounded>
-          <v-img
-            :src="`https://cdn.vuetifyjs.com/docs/images/graphics/gpus/${item.image}`"
-            height="64"
-            cover
-          ></v-img>
-        </v-card>
-      </template>
-
-      <template v-slot:item.rating="{ item }">
-        <v-rating
-          :model-value="item.rating"
-          color="orange-darken-2"
-          density="compact"
-          size="small"
-          readonly
-        ></v-rating>
-      </template>
-
-      <template v-slot:item.stock="{ item }">
-        <div class="text-end">
-          <v-chip
-            :color="item.stock ? 'green' : 'red'"
-            :text="item.stock ? 'In stock' : 'Out of stock'"
-            class="text-uppercase"
-            size="small"
-            label
-          ></v-chip>
-        </div>
-      </template>
-    </v-data-table>
-  </v-card>
 </template>
 
 <script setup>
-  import { ref } from 'vue'
-
+  import { ref, watch } from 'vue'
+  import axios from 'axios'
+  
+  const props = defineProps(['projectid', 'selectedNode'])
+  
+  const projectid = ref(props.projectid)
+  const selectedNode = ref(props.selectedNode)
+  const projectName = ref();
   const search = ref('')
-  const items = [
-    {
-      name: 'Nebula GTX 3080',
-      image: '1.png',
-      price: 699.99,
-      rating: 5,
-      stock: true,
-    },
-    {
-      name: 'Galaxy RTX 3080',
-      image: '2.png',
-      price: 799.99,
-      rating: 4,
-      stock: false,
-    },
-    {
-      name: 'Orion RX 6800 XT',
-      image: '3.png',
-      price: 649.99,
-      rating: 3,
-      stock: true,
-    },
-    {
-      name: 'Vortex RTX 3090',
-      image: '4.png',
-      price: 1499.99,
-      rating: 4,
-      stock: true,
-    },
-    {
-      name: 'Cosmos GTX 1660 Super',
-      image: '5.png',
-      price: 299.99,
-      rating: 4,
-      stock: false,
-    },
-  ]
+  const items = [ ]
+  const nodeName = ref()
+  
+  watch(() => props.selectedNode, () => {
+	axios.get('/api/project/v1/nodeSummary/' + props.selectedNode)
+	.then(function (response) {
+
+	})
+	.catch(function (error) {
+	  console.log(error);
+	})
+	.finally(function () {
+	});	
+  });
+
+  const progress = ref({
+	items: {
+		testPoints: 1024,
+		pass: 80,
+		fail: 22,
+		completedTestPoints:102,
+		percentage: 12
+	},
+	
+	date: {
+		startTest: '2024/1/3',
+		deadline: '2024/9/1',
+		estimatedCompletionDate: '2024/10/5',
+		
+		progressStatus: 'delay',
+		diffDays: -4
+	},
+	cost: {
+		budget: 100000,
+		expenditure: 1000,
+		unit: '$',
+	}
+  })
+    
+  const duts = ref([
+  	{name: 'Cable', quantity: 20, done: 1, percent: 10},
+	{name: 'Fibers', quantity: 120, done: 20, percent: 10},
+	{name: 'Ports', quantity: 2400, done: 200, percent: 10}
+  ])
+  
+  const testers = ref([ 
+		{name: 'OTDR', used: 4, assigned: 5},
+		{name: 'OPM', used: 18, assigned: 20},
+		{name: 'OSA', used: 4, assigned: 5},
+		{name: '100G Tester', used: 4, assigned: 5},
+		{name: '400G Tester', used: 5, assigned: 5},
+	])
+	
+  const humanresource = ref([
+		{id: 1, name: 'Andre Young', role: 'Team Leader'},
+		{id: 2, name: 'Snoop Dogg', role: 'Technician'},
+		{id: 3, name: 'Ice Cube', role: 'Engineer'},
+		{id: 4, name: 'Easy E', role: 'Engineer'},
+		{id: 5, name: 'Tupac Amaru Shakur', role: 'Technician'},
+	])
+	
+	axios.get('/api/project/v1/project/' + 	projectid.value)
+	.then(function (response) {
+		projectName.value = response.data.name;
+	})
+	.catch(function (error) {
+	  console.log(error);
+	})
+	.finally(function () {
+	});		
 </script>
 
 <script>
-  export default {
-    data () {
-      return {
-        search: '',
-        items: [
-          {
-            name: 'Nebula GTX 3080',
-            image: '1.png',
-            price: 699.99,
-            rating: 5,
-            stock: true,
-          },
-          {
-            name: 'Galaxy RTX 3080',
-            image: '2.png',
-            price: 799.99,
-            rating: 4,
-            stock: false,
-          },
-          {
-            name: 'Orion RX 6800 XT',
-            image: '3.png',
-            price: 649.99,
-            rating: 3,
-            stock: true,
-          },
-          {
-            name: 'Vortex RTX 3090',
-            image: '4.png',
-            price: 1499.99,
-            rating: 4,
-            stock: true,
-          },
-          {
-            name: 'Cosmos GTX 1660 Super',
-            image: '5.png',
-            price: 299.99,
-            rating: 4,
-            stock: false,
-          },
-        ],
-      }
-    },
-  }
+
 </script>

@@ -8,9 +8,15 @@
   },
   "dependencies": {
     "@mdi/font": "7.0.96",
+    "axios": "^1.6.8",
+    "chart.js": "^4.4.3",
+    "chartjs-plugin-datalabels": "^2.2.0",
+    "create-vite": "^5.2.3",
     "roboto-fontface": "*",
     "splitpanes": "^3.1.5",
+    "typescript": "^5.4.5",
     "vue": "^3.4.0",
+    "vue-chartjs": "^5.3.1",
     "vue3-treeview": "^0.4.2",
     "vuetify": "^3.5.0"
   },

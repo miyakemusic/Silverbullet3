@@ -1,164 +1,126 @@
-
 <template>
+	<v-btn @click="initTree">Init</v-btn>
+	<v-btn @click="getTree">Get</v-btn>
+	<v-btn @click="deleteNode">Delete</v-btn>
   <v-treeview
+  	v-model:activated="active"
     v-model="tree"
     :items="items"
-    :opened="initiallyOpen"
-    item-key="name"
-    activatable
-    open-on-click
+	item-value="id"
+	activatable
+	hoverable
+	open-on-click
+	return-object
+	@click:select="onNodeClicked"
+	@update:open="onNodeClicked"
+	@update:activated="onNodeClicked"
   >
-    <template v-slot:prepend="{ item, open }">
-      <v-icon v-if="!item.file">
-        {{ open ? 'mdi-folder-open' : 'mdi-folder' }}
-      </v-icon>
-      <v-icon v-else>
-        {{ files[item.file] }}
-      </v-icon>
-    </template>
+  <template v-slot:prepend="{ item, open }">
+    <v-icon v-if="item.file === 'node'">
+      {{ open ? 'mdi-folder-open' : 'mdi-folder' }}
+    </v-icon>
+    <v-icon v-else>
+      {{ files[item.file] }}
+    </v-icon>
+  </template>
+
   </v-treeview>
 </template>
 
 <script setup>
   import { ref } from 'vue'
   import { VTreeview } from 'vuetify/labs/VTreeview'
-  const initiallyOpen = ref(['public'])
+  import axios from 'axios'
+  import { onMounted } from 'vue'
+  import { computed } from 'vue' 
+
+  const emit = defineEmits(['onNodeSelect'])
+  const props = defineProps(['projectid'])
+  const active = ref([])
   const files = ref({
     html: 'mdi-language-html5',
     js: 'mdi-nodejs',
-    json: 'mdi-code-json',
-    md: 'mdi-language-markdown',
+    dut: 'mdi-switch',
+    testPoint: 'mdi-connection',
     pdf: 'mdi-file-pdf-box',
     png: 'mdi-file-image',
     txt: 'mdi-file-document-outline',
-    xls: 'mdi-file-excel',
+    project: 'mdi-dresser-outline',
   })
   const tree = ref([])
   const items = ref([
     {
+		id: 1,
       title: '.git',
+	  file: 'project'
     },
     {
+		id: 2,
       title: 'node_modules',
-    },
-    {
-      title: 'public',
-      children: [
-        {
-          title: 'static',
-          children: [{
-            title: 'logo.png',
-            file: 'png',
-          }],
-        },
-        {
-          title: 'favicon.ico',
-          file: 'png',
-        },
-        {
-          title: 'index.html',
-          file: 'html',
-        },
-      ],
-    },
-    {
-      title: '.gitignore',
-      file: 'txt',
-    },
-    {
-      title: 'babel.config.js',
-      file: 'js',
-    },
-    {
-      title: 'package.json',
-      file: 'json',
-    },
-    {
-      title: 'README.md',
-      file: 'md',
-    },
-    {
-      title: 'vue.config.js',
-      file: 'js',
-    },
-    {
-      title: 'yarn.lock',
-      file: 'txt',
+	  file: 'project'
     },
 	{
-	   title: 'node_modules2',
-	 },
-	 {
-	   title: 'public2',
-	   children: [
-	     {
-	       title: 'static2',
-	       children: [{
-	         title: 'logo.png',
-	         file: 'png',
-	       }],
-	     },
-	     {
-	       title: 'favicon2.ico',
-	       file: 'png',
-	     },
-	     {
-	       title: 'index2.html',
-	       file: 'html',
-	     },
-	   ],
-	 },
-	 {
-	    title: 'node_modules2',
-	  },
-	  {
-	    title: 'public2',
-	    children: [
-	      {
-	        title: 'static2',
-	        children: [{
-	          title: 'logo.png',
-	          file: 'png',
-	        }],
-	      },
-	      {
-	        title: 'favicon2.ico',
-	        file: 'png',
-	      },
-	      {
-	        title: 'index2.html',
-	        file: 'html',
-	      },
-	    ],
-	  },
+		id: 5,
+	  title: 'node_modules',
+	  file: 'project'
+	},
   ])
+  const selected = computed(() => {
+    console.log(active.value)
+    if (!active.value.length) return undefined
+    const id = active.value[0]
+	return id;
+    //return users.value.find(user => user.id === id)
+  })  
+  onMounted(() => {
+	getTree();
+  })
+  
+  
+  function initTree() {
+  	axios.get('/api/project/v1/initTree')
+  	  .then(function (response) {
+  	    console.log(response);
+  	  })
+  	  .catch(function (error) {
+  	    console.log(error);
+  	  })
+  	  .finally(function () {
+  	  });
+  }
+  
+  function getTree() {
+  	axios.get('/api/project/v1/tree/' + props.projectid)
+  	  .then(function (response) {
+		items.value = response.data;
+  	    console.log(response);
+  	  })
+  	  .catch(function (error) {
+  	    console.log(error);
+  	  })
+  	  .finally(function () {
+  	  });			
+  }
+  
+  function deleteNode() {
+	axios.delete('/api/project/v1/treeAll')
+	.then(function (response) {
+		
+	})
+	.catch(function (error) {
+	  console.log(error);
+	})
+	.finally(function () {
+	});	
+  }
+  
+  function onNodeClicked(item) {
+	
+	var id = item[0];
+	emit('onNodeSelect', id)
+  }
 </script>
 
 <script>
-  export default {
-	components: {
-	  VTreeview,
-	},
-	/*
-    data: () => ({
-      initiallyOpen: ['public'],
-      files: {
-        html: 'mdi-language-html5',
-        js: 'mdi-nodejs',
-        json: 'mdi-code-json',
-        md: 'mdi-language-markdown',
-        pdf: 'mdi-file-pdf-box',
-        png: 'mdi-file-image',
-        txt: 'mdi-file-document-outline',
-        xls: 'mdi-file-excel',
-      },
-      tree: [],
-      items: [
 
-
-
-      ],
-    }),
-	*/
-  }
 </script>

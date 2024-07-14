@@ -1,13 +1,19 @@
-<script>
-//import { Splitpanes, Pane } from 'splitpanes'
-//import 'splitpanes/dist/splitpanes.css'
-export default {
-//	components: {Splitpanes, Pane},
-}
-</script>
 <template>
 	<v-navigation-drawer permanent>
-		<ProjectTree />
+		<ProjectTree :projectid="projectid" @on-node-select="onNodeSelect" />
 	</v-navigation-drawer>
-	<ProjectTable />
+	<ProjectTable v-if="selectedNode==undefined" :projectid="projectid" :nodeid="selectedNode"/>
+	<NodeSummary v-else :nodeid="selectedNode"></NodeSummary>
 </template>
+<script setup>
+	import { ref } from 'vue'
+
+	const props = defineProps(['projectid'])
+
+	const projectid = ref(props.projectid)
+	const selectedNode = ref();
+	
+	function onNodeSelect(id) {
+		selectedNode.value = id
+	}
+</script>
