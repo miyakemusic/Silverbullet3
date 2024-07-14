@@ -20,7 +20,6 @@ onMounted(() => {
 });
 
 function retrieve() {
-	debugger
 	axios.get('/api/project/v1/testItemSummary?nodeid=' + props.nodeid)
 	.then(function (response) {
 		testItems.value = response.data

@@ -1,4 +1,5 @@
 <template>
+	<MyApexChart></MyApexChart>
 	<v-row>
 		<v-card width="300" variant="outlined" class="ma-2">
 			<HorizontalStackChart></HorizontalStackChart>

@@ -8,7 +8,7 @@
 		</thead>
 		<tbody>
 			<tr>
-				<td>{{items.total}}</td>
+				<td>{{ items.total}}</td>
 				<td>{{ items.pass }}</td>
 				<td>{{ items.fail }}</td>
 				<td>{{ 	completed }} ({{ percentage }}%)</td>

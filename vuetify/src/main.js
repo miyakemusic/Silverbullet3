@@ -12,8 +12,11 @@ import App from './App.vue'
 
 // Composables
 import { createApp } from 'vue'
+import VueApexCharts from "vue3-apexcharts"
 
 const app = createApp(App)
+
+app.use(VueApexCharts)
 
 registerPlugins(app)
 
