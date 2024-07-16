@@ -31,7 +31,7 @@
 	})
 	
 	const percentage = computed(() => {
-	  return (items.value.pass + items.value.fail) * 100 / items.value.total
+	  return ((items.value.pass + items.value.fail) * 100 / items.value.total).toFixed(1)
 	})
 	
 	const rest = computed(() => {

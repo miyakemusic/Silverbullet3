@@ -10,9 +10,10 @@ import java.util.stream.Collectors;
 
 import org.silverbullet.dto.AlarmDto;
 import org.silverbullet.dto.CostDto;
+import org.silverbullet.dto.ProgressHistoryDto;
 import org.silverbullet.dto.NodeSummaryDto;
 import org.silverbullet.dto.ProgressDto;
-
+import org.silverbullet.dto.ProgressDto.Type;
 import org.silverbullet.dto.ScheduleDto;
 import org.silverbullet.dto.TestItemDto;
 import org.silverbullet.dto.TestPointProgressDto;
@@ -75,12 +76,12 @@ public class ProjectRestController {
 				projectRepository.save(project);
 				
 		//		List<String> testName = Arrays.asList("FIP@Otemachi", );
-				for (int j = 0; j < 8; j++) {
+				for (int j = 0; j < 16; j++) {
 					NodeEntity fiber = NodeEntity.builder().type("dut").name("Fiber#" + String.format("%03d", j)).parentNode(cable).build();
 					nodeRepository.save(fiber);
 
-					
-					for (int k = 0; k < 4; k++) {
+					int max = (int)(Math.random() * 10) + 1;
+					for (int k = 0; k < max; k++) {
 						TestItemEntity testItem = TestItemEntity.builder().name("TestItem#" + k).node(fiber).status(randStatus()).build();
 						testItemRepository.save(testItem);
 					}
@@ -270,6 +271,26 @@ public class ProjectRestController {
 		TestItemCollector collector = new TestItemCollector(nodeRepository, testItemRepository, nodeid);
 
 		return collector.progress();
+	}
+	
+	@GetMapping("/progress/date")
+	public ProgressDto testItemProgressDate(Principal princiapl, @RequestParam(required=false, name="projectid") Long projectid, @RequestParam(required=false, name="nodeid") Long nodeid) {
+		if (nodeid == null) {
+			nodeid = this.projectRepository.findById(projectid).get().getNode().getId();
+		}
+		return ProgressDto.builder().days(1).deadline(new Date()).estimatedCompletionDate(new Date()).startDate(new Date()).type(Type.delay).build();
+	}
+	
+	@GetMapping("/progress/cost/history")
+	public ProgressHistoryDto progressCostHistory(Principal princiapl, @RequestParam(required=false, name="projectid") Long projectid, @RequestParam(required=false, name="nodeid") Long nodeid) {
+		if (nodeid == null) {
+			nodeid = this.projectRepository.findById(projectid).get().getNode().getId();
+		}
+		return ProgressHistoryDto.builder()
+				.time(Arrays.asList("2024/1", "2024/2", "2024/3", "2024/4"))
+				.plan(Arrays.asList(100, 200, 300, 400))
+				.actual(Arrays.asList(110, 230, 330, 440))
+				.build();
 	}
 	
 	@GetMapping("/testItemSummary")

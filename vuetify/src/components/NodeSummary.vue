@@ -1,10 +1,4 @@
 <template>
-	<MyApexChart></MyApexChart>
-	<v-row>
-		<v-card width="300" variant="outlined" class="ma-2">
-			<HorizontalStackChart></HorizontalStackChart>
-		</v-card>
-	</v-row>
 	<v-row>
 		<v-col>
 			<v-card width="500" variant="outlined" class="ma-2">
@@ -13,17 +7,20 @@
 		</v-col>
 		<v-col>
 			<v-card width="300" variant="outlined" class="ma-2">
-				<ProgressChart :nodeid="props.nodeid"></ProgressChart>
+				<ProgressPieChartApex :nodeid="props.nodeid"></ProgressPieChartApex>
 			</v-card>
 		</v-col>
-	</v-row>
-	<v-row>
+		<v-card width="500" variant="outlined" class="ma-2">
+			<TestItemProgressPieChartApex :nodeid="props.nodeid"></TestItemProgressPieChartApex>
+		</v-card>
+
+
 		<v-card width="500" variant="outlined" class="ma-2">
 			<TestItemSummary :nodeid="props.nodeid"></TestItemSummary>
 		</v-card>
-	</v-row>
-	<v-row>
-		<TestItemTable :nodeid="props.nodeid"></TestItemTable>
+		<v-card width="600" variant="outlined" class="ma-2">
+			<TestItemTable :nodeid="props.nodeid"></TestItemTable>
+		</v-card>
 	</v-row>
 </template>
 <script setup lang="ts">

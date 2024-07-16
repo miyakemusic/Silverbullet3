@@ -1,6 +1,6 @@
 <template>
 	<v-data-table 
-		:items="testItems" hide-default-footer density="compact">
+		:items="testItems" density="compact">
 	</v-data-table>
 </template>
 <script setup lang="ts">

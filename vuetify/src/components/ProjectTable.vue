@@ -8,28 +8,12 @@
 		</v-col>
 		<v-col>
 			<v-card width="300" variant="outlined" class="ma-2">
-				<ProgressChart :projectid="projectid" :nodeid="selectedNode"></ProgressChart>
+				<ProgressPieChartApex :projectid="projectid" :nodeid="selectedNode"></ProgressPieChartApex>
 			</v-card>
 		</v-col>
 		<v-col>
 			<v-card width="600" variant="outlined" class="ma-2">
-				Test Progress (Time)
-				<v-table density="compact">
-					<thead>
-						<tr>
-							<td>Start</td><td>Deadline</td><td>Estimated Completion</td><td>Progress</td><td>Delay days</td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>{{progress.date.startTest}}</td>
-							<td>{{progress.date.deadline }})</td>
-							<td><v-chip color="red"	label>{{progress.date.estimatedCompletionDate  }}</v-chip></td>
-							<td><v-chip color="red"	label>{{progress.date.progressStatus  }}</v-chip></td>
-							<td><v-chip color="red"	label>{{progress.date.diffDays  }}</v-chip></td>
-						</tr>
-					</tbody>
-				</v-table>
+				<TimeProgressTable :projectid="projectid"></TimeProgressTable>
 			</v-card>
 		</v-col>
 		<v-col>
@@ -92,9 +76,10 @@
 			</v-card>
 		</v-col>
 	</v-row>
-	
 
-	<ProgressLineChart></ProgressLineChart>
+	<v-card width="800" variant="outlined" class="ma-2">
+		<ProgressLineChart :projectid="projectid"></ProgressLineChart>
+	</v-card>
 
 </template>
 
