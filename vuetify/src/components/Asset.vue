@@ -1,3 +1,3 @@
 <template>
-	Asset
+	<AssetTable></AssetTable>
 </template>

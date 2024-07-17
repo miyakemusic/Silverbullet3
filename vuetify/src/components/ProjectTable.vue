@@ -78,9 +78,11 @@
 	</v-row>
 
 	<v-card width="800" variant="outlined" class="ma-2">
-		<ProgressLineChart :projectid="projectid"></ProgressLineChart>
+		<ProgressLineChart :projectid="projectid" :url="'/api/project/v1/progress/cost/history'" :title="'Cost'" :unit="'MYen'"></ProgressLineChart>
 	</v-card>
-
+	<v-card width="800" variant="outlined" class="ma-2">
+		<ProgressLineChart :projectid="projectid" :url="'/api/project/v1/progress/item/history'" :title="'Burndown'" :unit="'Items'"></ProgressLineChart>
+	</v-card>
 </template>
 
 <script setup>

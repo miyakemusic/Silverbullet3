@@ -281,6 +281,18 @@ public class ProjectRestController {
 		return ProgressDto.builder().days(1).deadline(new Date()).estimatedCompletionDate(new Date()).startDate(new Date()).type(Type.delay).build();
 	}
 	
+	@GetMapping("/progress/item/history")
+	public ProgressHistoryDto progressItemHistory(Principal princiapl, @RequestParam(required=false, name="projectid") Long projectid, @RequestParam(required=false, name="nodeid") Long nodeid) {
+		if (nodeid == null) {
+			nodeid = this.projectRepository.findById(projectid).get().getNode().getId();
+		}
+		return ProgressHistoryDto.builder()
+				.time(Arrays.asList("2024/1", "2024/2", "2024/3", "2024/4", "2024/5", "2024/6", "2024/7", "2024/8", "2024/9", "2024/10", "2024/11", "2024/12"))
+				.plan(Arrays.asList(900, 800, 700, 600, 500, 400, 300, 200, 100, 0))
+				.actual(Arrays.asList(900, 800, 750, 660, 570, 490))
+				.build();
+	}
+	
 	@GetMapping("/progress/cost/history")
 	public ProgressHistoryDto progressCostHistory(Principal princiapl, @RequestParam(required=false, name="projectid") Long projectid, @RequestParam(required=false, name="nodeid") Long nodeid) {
 		if (nodeid == null) {

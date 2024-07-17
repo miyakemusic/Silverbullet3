@@ -6,7 +6,7 @@
 import axios from 'axios'
 import { ref ,watch, onMounted} from 'vue'
 
-const props = defineProps(['nodeid', "projectid"])
+const props = defineProps(['nodeid', "projectid", "url", "title", "unit"])
 
 onMounted(() => {
 	retrieve()
@@ -14,12 +14,13 @@ onMounted(() => {
 
 function retrieve() {
 	debugger
-	var url = '/api/project/v1/progress/cost/history?'
+//	var url = '/api/project/v1/progress/cost/history'
+	var url = props.url
 	if (props.nodeid == undefined) {
-		url += 'projectid=' + props.projectid
+		url = url + '?projectid=' + props.projectid
 	}
 	else {
-		url += 'nodeid=' + props.nodeid
+		url = url + '?nodeid=' + props.nodeid
 	}
 	axios.get(url)
 	.then(function (response) {
@@ -42,7 +43,7 @@ function retrieve() {
 		        width: [0, 4]
 		      },
 		      title: {
-		        text: 'Cost Progress'
+		        text: props.title
 		      },
 		      dataLabels: {
 		        enabled: true,
@@ -51,7 +52,7 @@ function retrieve() {
 		      labels: response.data.time,
 		      yaxis: [{
 		        title: {
-		          text: 'MYen',
+		          text: props.unit,
 		        },
 		      
 		      }]
