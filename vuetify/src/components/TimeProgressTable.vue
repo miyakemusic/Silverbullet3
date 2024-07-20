@@ -20,7 +20,9 @@ Test Progress (Time)
 
 <script setup lang="ts">
 import {ref, onMounted, watch} from 'vue'
+
 import axios from 'axios'
+import convertUrl from './MyUrl.ts'
 const props = defineProps(['nodeid', 'projectid'])
 
 const date = ref({
@@ -48,7 +50,7 @@ const date = ref({
 		else {
 			url += 'nodeid=' + props.nodeid
 		}
-		axios.get(url)
+		axios.get(convertUrl(url))
 		.then(function (response) {
 			date.value = response.data
 		})

@@ -88,6 +88,7 @@
 <script setup>
   import { ref, watch } from 'vue'
   import axios from 'axios'
+  import convertUrl from './MyUrl.ts'
   
   const props = defineProps(['projectid', 'selectedNode'])
   
@@ -99,7 +100,7 @@
   const nodeName = ref()
   
   watch(() => props.selectedNode, () => {
-	axios.get('/api/project/v1/nodeSummary/' + props.selectedNode)
+	axios.get(convertUrl('/api/project/v1/nodeSummary/' + props.selectedNode))
 	.then(function (response) {
 
 	})
@@ -156,7 +157,7 @@
 		{id: 5, name: 'Tupac Amaru Shakur', role: 'Technician'},
 	])
 	
-	axios.get('/api/project/v1/project/' + 	projectid.value)
+	axios.get(convertUrl('/api/project/v1/project/' + 	projectid.value))
 	.then(function (response) {
 		projectName.value = response.data.name;
 	})

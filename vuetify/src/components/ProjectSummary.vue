@@ -81,7 +81,7 @@
 <script setup>
   import { ref } from 'vue'
   import axios from 'axios'
-  
+  import convertUrl from './MyUrl.ts'
   const color = ref({
     no: 'green',
     warning: 'yellow',
@@ -91,7 +91,7 @@
   const emit = defineEmits(['onProjectSelect'])
   const search = ref('')
   const items = ref()
-  
+
   const headers =   props.headers;
 /*  
   const headers = [
@@ -108,7 +108,7 @@
 	emit('onProjectSelect', id);
   }
   
-  axios.get(props.url)
+  axios.get(convertUrl(props.url))
   .then(function (response) {
   	items.value = response.data;
   })

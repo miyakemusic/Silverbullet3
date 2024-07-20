@@ -14,8 +14,6 @@
 	</v-row>
 </template>
 <script setup>
-	import { ref } from 'vue'
-
 	const emit = defineEmits(['onProjectSelect'])
 
 	const construction_headers = [

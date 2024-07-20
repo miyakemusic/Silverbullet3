@@ -1,4 +1,4 @@
-package org.silverbullet;
+package org.silverbullet.controller;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import org.silverbullet.TestItemCollector;
+import org.silverbullet.TestItemSummaryCollector;
+import org.silverbullet.TreeConverter;
+import org.silverbullet.VuetifyTree;
 import org.silverbullet.dto.AlarmDto;
 import org.silverbullet.dto.CostDto;
 import org.silverbullet.dto.ProgressHistoryDto;
@@ -21,8 +25,12 @@ import org.silverbullet.entity.NodeEntity;
 import org.silverbullet.entity.ProjectEntity;
 import org.silverbullet.entity.TestItemEntity;
 import org.silverbullet.entity.TestStatus;
+import org.silverbullet.repository.NodeRepository;
+import org.silverbullet.repository.ProjectRepository;
+import org.silverbullet.repository.TestItemRepository;
 import org.silverbullet.dto.ProjectSummaryDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +38,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@CrossOrigin(origins = {"http://localhost:3000"})
 @RestController
 @RequestMapping("/api/project/v1")
 public class ProjectRestController {

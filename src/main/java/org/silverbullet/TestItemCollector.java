@@ -7,6 +7,8 @@ import org.silverbullet.dto.TestItemDto;
 import org.silverbullet.dto.TestPointProgressDto;
 import org.silverbullet.entity.NodeEntity;
 import org.silverbullet.entity.TestStatus;
+import org.silverbullet.repository.NodeRepository;
+import org.silverbullet.repository.TestItemRepository;
 
 import lombok.Getter;
 

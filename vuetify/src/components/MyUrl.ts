@@ -1,0 +1,1 @@
+export default function convertUrl(url: string): string {return "http://localhost:8080" + url}

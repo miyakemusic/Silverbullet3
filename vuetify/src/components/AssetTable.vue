@@ -1,17 +1,17 @@
 <template>
 	<v-data-table
 	  :items="items"
-	  :items-per-page="5"
+	  :items-per-page="20"
 	  class="elevation-1 my-3 mx-auto"
-	  style="width:1000px;"
+
 	>
-		<template v-slot:item.url="{ item }" >
-		      <v-img :src="item.url" 
+		<template v-slot:item.image="{ item }" >
+		      <v-img :src="item.image" 
 		             :aspect-ratop="16/9" 
-		             height="9vw" 
-		             min-height="100px"
-		             width="16vw" 
-		             min-width="160px" 
+		             height="3vw" 
+		             min-height="50px"
+		             width="5vw" 
+		             min-width="50px" 
 		             class="ma-0 pa-0"
 		     ></v-img>
 		 </template>
@@ -19,9 +19,9 @@
 </template>
 <script setup lang="ts">
 import axios from 'axios'
-import { ref, watch } from 'vue'
-import { onMounted } from "vue";
-import { reactive, computed } from 'vue'
+import { ref, watch, onMounted } from 'vue'
+import convertUrl from './MyUrl.ts'
+
 const props = defineProps(['projectid', 'nodeid'])
 
 const items = ref();
@@ -34,7 +34,7 @@ watch(() => props.nodeid, () => {
 });
 
 function retrieve() {
-	axios.get('/api/asset/v1/testers')
+	axios.get(convertUrl('/api/asset/v1/testers'))
 	.then(function (response) {
 		items.value = response.data;
 	})

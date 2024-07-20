@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.silverbullet.dto.TestPointProgressDto;
 import org.silverbullet.entity.NodeEntity;
+import org.silverbullet.repository.NodeRepository;
+import org.silverbullet.repository.TestItemRepository;
 
 import lombok.Getter;
 

@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue'
 import axios from 'axios'
-
+import convertUrl from './MyUrl.ts'
 const options = ref({
   chart: {
 	type: 'bar',
@@ -47,7 +47,7 @@ onMounted(() => {
 });
 
 function retrieve() {
-	axios.get('/api/project/v1/testItemSummary?nodeid=' + props.nodeid)
+	axios.get(convertUrl('/api/project/v1/testItemSummary?nodeid=' + props.nodeid))
 	.then(function (response) {
 		const xaxis = []
 		const pass = []

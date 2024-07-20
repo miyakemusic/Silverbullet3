@@ -19,12 +19,19 @@
 </template>
 <script setup lang="ts">
 	import axios from 'axios'
+
 	import { ref, watch } from 'vue'
 	import { onMounted } from "vue";
 	import { reactive, computed } from 'vue'
+	import convertUrl from './MyUrl.ts'
+	
 	const props = defineProps(['projectid', 'nodeid'])
 
-	const items = ref();
+	const items = ref({
+		total:0,
+		pass:0,
+		fail:0,
+	});
 	
 	const completed = computed(() => {
 	  return items.value.total - (items.value.pass + items.value.fail)
@@ -53,9 +60,9 @@
 		else {
 			url += 'nodeid=' + props.nodeid
 		}
-		axios.get(url)
+		axios.get(convertUrl(url))
 		.then(function (response) {
-			items.value = response.data
+						items.value = response.data
 		})
 		.catch(function (error) {
 		  console.log(error);

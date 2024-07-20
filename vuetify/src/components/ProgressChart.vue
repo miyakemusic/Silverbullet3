@@ -8,7 +8,7 @@
 	import axios from 'axios'
 	import { ref ,watch, onMounted} from 'vue'
 	import chartjsPluginDatalabels from 'chartjs-plugin-datalabels'
-
+	import convertUrl from './MyUrl.ts'
 	ChartJS.register(ArcElement, Tooltip, Legend, chartjsPluginDatalabels)
 
 	const props = defineProps(['nodeid', "projectid"])
@@ -22,7 +22,7 @@
 	});
 	
 	function retrieve() {
-		var url = '/api/project/v1/progress?'
+		var url = convertUrl('/api/project/v1/progress?')
 		if (props.nodeid == undefined) {
 			url += 'projectid=' + props.projectid
 		}

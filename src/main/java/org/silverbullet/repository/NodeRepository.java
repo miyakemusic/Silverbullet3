@@ -1,4 +1,4 @@
-package org.silverbullet;
+package org.silverbullet.repository;
 import java.util.List;
 import java.util.Optional;
 

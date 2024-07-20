@@ -5,8 +5,9 @@
 <script setup lang="ts">
 	import axios from 'axios'
 	import { ref ,watch, onMounted} from 'vue'
+	import convertUrl from './MyUrl.ts'
 
-	const props = defineProps(['nodeid', "projectid"])
+		const props = defineProps(['nodeid', "projectid"])
 	const options = ref({		
 			chart: {
 				type: 'pie',
@@ -37,7 +38,7 @@
 		else {
 			url += 'nodeid=' + props.nodeid
 		}
-		axios.get(url)
+		axios.get(convertUrl(url))
 		.then(function (response) {
 			series.value = [response.data.pass, response.data.fail, response.data.rest]
 			

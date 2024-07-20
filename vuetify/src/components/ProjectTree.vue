@@ -33,7 +33,7 @@
   import axios from 'axios'
   import { onMounted } from 'vue'
   import { computed } from 'vue' 
-
+  import convertUrl from './MyUrl.ts'
   const emit = defineEmits(['onNodeSelect'])
   const props = defineProps(['projectid'])
   const active = ref([])
@@ -78,7 +78,7 @@
   
   
   function initTree() {
-  	axios.get('/api/project/v1/initTree')
+  	axios.get(convertUrl('/api/project/v1/initTree'))
   	  .then(function (response) {
   	    console.log(response);
   	  })
@@ -90,7 +90,7 @@
   }
   
   function getTree() {
-  	axios.get('/api/project/v1/tree/' + props.projectid)
+  	axios.get(convertUrl('/api/project/v1/tree/' + props.projectid))
   	  .then(function (response) {
 		items.value = response.data;
   	    console.log(response);
@@ -103,7 +103,7 @@
   }
   
   function deleteNode() {
-	axios.delete('/api/project/v1/treeAll')
+	axios.delete(convertUrl('/api/project/v1/treeAll'))
 	.then(function (response) {
 		
 	})

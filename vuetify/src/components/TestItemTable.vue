@@ -7,6 +7,7 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue'
 import axios from 'axios'
+import convertUrl from './MyUrl.ts'
 
 const props = defineProps(['nodeid'])
 const testItems = ref([])
@@ -21,7 +22,7 @@ onMounted(() => {
 });
 
 function retrieve() {
-	axios.get('/api/project/v1/nodeSummary/' + props.nodeid)
+	axios.get(convertUrl('/api/project/v1/nodeSummary/' + props.nodeid))
 	.then(function (response) {
 		nodeName.value = response.data.name
 		testItems.value = response.data.testItems

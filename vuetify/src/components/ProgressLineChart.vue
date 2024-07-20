@@ -5,6 +5,7 @@
 <script setup lang="ts">
 import axios from 'axios'
 import { ref ,watch, onMounted} from 'vue'
+import convertUrl from './MyUrl.ts'
 
 const props = defineProps(['nodeid', "projectid", "url", "title", "unit"])
 
@@ -13,7 +14,6 @@ onMounted(() => {
 });
 
 function retrieve() {
-	debugger
 //	var url = '/api/project/v1/progress/cost/history'
 	var url = props.url
 	if (props.nodeid == undefined) {
@@ -22,7 +22,7 @@ function retrieve() {
 	else {
 		url = url + '?nodeid=' + props.nodeid
 	}
-	axios.get(url)
+	axios.get(convertUrl(url))
 	.then(function (response) {
 		series.value = 		[{
 		    name: 'Plan',

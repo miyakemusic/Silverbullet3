@@ -27,6 +27,8 @@
 <script setup>
   import { ref } from 'vue'
   import axios from 'axios'
+  import convertUrl from './MyUrl.ts'
+  
   const color = ref({
     no: 'green',
     warning: 'yellow',
@@ -65,7 +67,7 @@
 	},
   ])
   
-  axios.get('/api/project/v1/projectSummary/Monitoring')
+  axios.get(convertUrl('/api/project/v1/projectSummary/Monitoring'))
   .then(function (response) {
   	items.value = response.data;
   })
