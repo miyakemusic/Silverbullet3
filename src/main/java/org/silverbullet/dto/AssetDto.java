@@ -8,15 +8,17 @@ import lombok.experimental.Tolerate;
 
 @Data
 @Builder
-public class TesterDto {
+public class AssetDto {
 	@Tolerate
-	public TesterDto() {}
+	public AssetDto() {}
 	
-	private String categories;
+	private Long id;
+	private List<String> categories;
 	private String manufacturer;
 	private String family;	
 	private String model;	
 	private String image;
+	private String note;
 	private String serialNumber;
 	private String currentUser;
 }

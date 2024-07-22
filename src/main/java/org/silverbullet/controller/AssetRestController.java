@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import org.silverbullet.dto.AssetFilterDto;
 import org.silverbullet.dto.OptionEnabled;
-import org.silverbullet.dto.TesterDto;
+import org.silverbullet.dto.AssetDto;
 import org.silverbullet.entity.AssetAttributeEntity;
 import org.silverbullet.entity.AssetEntity;
 import org.silverbullet.entity.AssetInstanceEntity;
@@ -23,6 +23,8 @@ import org.silverbullet.repository.RelationAssetAttributeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -61,6 +63,9 @@ public class AssetRestController {
 
 		AssetAttributeEntity attributeOpm = AssetAttributeEntity.builder().attribute("OPM").build();
 		assetAttributeRepository.save(attributeOpm);
+	
+		AssetAttributeEntity attributeFip = AssetAttributeEntity.builder().attribute("FIP").build();
+		assetAttributeRepository.save(attributeFip);
 		
 		ManufacturerEntity manufacturerAnritsu = ManufacturerEntity.builder().name("Anritsu").build();
 		manufacturerRepository.save(manufacturerAnritsu);
@@ -111,14 +116,19 @@ public class AssetRestController {
 			AssetInstanceEntity assetInstance = AssetInstanceEntity.builder().asset(assetMaxTester).serial_number("ESN000000"+ i).build();
 			assetInstanceRepository.save(assetInstance);
 		}
+		
+		
 	}
 	
-	@GetMapping("/testers")
-	public List<TesterDto> nodeInfo(Principal principal) {
-//		List<TesterDto> ret = new ArrayList<>();
-		
-		return this.assetInstanceRepository.findAll().stream().map(ai -> TesterDto.builder()
-				.categories(ai.getAsset().getRelationAttribute().stream().map(relation -> relation.getAttribute().getAttribute()).collect(Collectors.joining(", ")))
+	@GetMapping("/myAssets")
+	public List<AssetDto> myAssets(Principal principal) {
+	
+		return this.assetInstanceRepository.findAll().stream().map(ai -> AssetDto.builder()
+				.id(ai.getId())
+				.categories(
+						//ai.getAsset().getRelationAttribute().stream().map(relation -> relation.getAttribute().getAttribute()).collect(Collectors.joining(", "))
+						ai.getAsset().getRelationAttribute().stream().map(relation -> relation.getAttribute().getAttribute()).collect(Collectors.toList())
+						)
 				.manufacturer(ai.getAsset().getManufacturer().getName())
 				.model(ai.getAsset().getName())
 				.image(ai.getAsset().getImage())
@@ -126,6 +136,67 @@ public class AssetRestController {
 				.serialNumber(ai.getSerial_number())
 				.build()).collect(Collectors.toList());
 
+	}
+	
+	@PostMapping("/myAsset")
+	public String myAsset(Principal principal, @RequestBody AssetDto myAssetDto) {
+	
+		this.assetInstanceRepository.save(AssetInstanceEntity.builder().asset(this.assetRepository.findById(myAssetDto.getId()).get()).serial_number(myAssetDto.getSerialNumber()).build());
+		return "OK";
+	}
+	
+	@GetMapping("/assets")
+	public List<AssetDto> assets(Principal principal) {
+//		List<TesterDto> ret = new ArrayList<>();
+		
+		return this.assetRepository.findAll().stream().map(ai -> AssetDto.builder()
+				.id(ai.getId())
+				.categories(
+						//ai.getRelationAttribute().stream().map(relation -> relation.getAttribute().getAttribute()).collect(Collectors.joining(", "))
+						ai.getRelationAttribute().stream().map(relation -> relation.getAttribute().getAttribute()).collect(Collectors.toList())
+						)
+				.manufacturer(ai.getManufacturer().getName())
+				.model(ai.getName())
+				.image(ai.getImage())
+				.family(ai.getFamily())
+				.note(ai.getNote())
+				.build()).collect(Collectors.toList());
+	}
+	
+	@PostMapping("/assets")
+	public String assets(Principal principal, @RequestBody AssetDto asset) {
+		AssetEntity entity = AssetEntity.builder()
+				.id(asset.getId())
+				.family(asset.getFamily())
+				.image(asset.getImage())
+				.name(asset.getModel())
+				.note(asset.getNote())
+				.manufacturer(this.manufacturerRepository.findByName(asset.getManufacturer()))
+				.build();
+		
+		this.assetRepository.save(entity);
+		
+		this.relationAssetAttributeRepository.deleteByAsset_id(entity.getId());
+		
+		asset.getCategories().forEach(cat -> {
+			AssetAttributeEntity attribute = assetAttributeRepository.findByAttribute(cat);
+			relationAssetAttributeRepository.save(RelationAssetAttributeEntity.builder().asset(entity).attribute(attribute).build());
+		});
+		
+		//.stream().map(cat -> assetAttributeRepository.findByAttribute(cat.trim())).collect(Collectors.toList());
+		
+		
+		return "OK";
+	}
+	
+	@GetMapping("/attributes")
+	public List<String> attributes(Principal principal) {
+		return 	this.assetAttributeRepository.findAll().stream().map(att -> att.getAttribute()).collect(Collectors.toList());
+	}
+	
+	@GetMapping("/manufacturers")
+	public List<String> manufacturers(Principal principal) {
+		return 	this.manufacturerRepository.findAll().stream().map(man -> man.getName()).collect(Collectors.toList());
 	}
 	
 	@GetMapping("/filter")

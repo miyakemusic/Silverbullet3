@@ -1,10 +1,27 @@
 <template>
+	<v-text-field
+	  v-model="search"
+	  label="Search"
+	  prepend-inner-icon="mdi-magnify"
+	  variant="outlined"
+	  hide-details
+	  single-line
+	></v-text-field>
+	
 	<v-data-table
 	  :items="items"
 	  :items-per-page="20"
+	  :search="search"
 	  class="elevation-1 my-3 mx-auto"
-
+	  @click:row="clickRow"
 	>
+	
+		<template v-slot:item.categories="{item}">
+			<v-label v-for="cat in item.categories" :text="cat + '.'">			
+				
+			</v-label>
+		</template>
+		
 		<template v-slot:item.image="{ item }" >
 		      <v-img :src="item.image" 
 		             :aspect-ratop="16/9" 
@@ -22,19 +39,20 @@ import axios from 'axios'
 import { ref, watch, onMounted } from 'vue'
 import convertUrl from './MyUrl.ts'
 
-const props = defineProps(['projectid', 'nodeid'])
-
-const items = ref();
+const props = defineProps(['update', 'url'])
+const items = ref([]);
+const search = ref('')
+const emit = defineEmits(['onSelect'])
 
 onMounted(() => {
 	retrieve();	
 });
-watch(() => props.nodeid, () => {
+watch(() => props.update, () => {
 	retrieve();
 });
 
 function retrieve() {
-	axios.get(convertUrl('/api/asset/v1/testers'))
+	axios.get(convertUrl(props.url))
 	.then(function (response) {
 		items.value = response.data;
 	})
@@ -43,5 +61,9 @@ function retrieve() {
 	})
 	.finally(function () {
 	});		
+}
+
+function clickRow(event, row) {
+	emit('onSelect', row.item)
 }
 </script>

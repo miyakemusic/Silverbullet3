@@ -3,6 +3,6 @@
 		<AssetFilter></AssetFilter>
 	</v-navigation-drawer>
 	<v-card>
-		<AssetTable></AssetTable>
+		<AssetTable :url="'/api/asset/v1/myAssets'"></AssetTable>
 	</v-card>
 </template>

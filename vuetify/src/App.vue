@@ -15,6 +15,9 @@
 		<Home v-if="currentMenu=='home'" @onProjectSelect="onProjectSelect"></Home>
 		<Test v-if="currentMenu=='test'" @onProjectSelect="onProjectSelect"></Test>
 		<TreeTest v-if="currentMenu=='treeTest'"></TreeTest>
+		<RegAsset v-if="currentMenu=='regasset'"></RegAsset>
+		<EquipmentManage v-if="currentMenu=='equipment'"></EquipmentManage>
+		
     </v-main>
 
 	<v-footer color="primary" app>

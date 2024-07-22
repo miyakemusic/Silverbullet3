@@ -33,6 +33,8 @@ public class AssetEntity {
 	private String family;
 	
 	private String image;
+	
+	private String note;
 	@ManyToOne
 	@JoinColumn(name = "manufacturer_id")
 	private ManufacturerEntity manufacturer;

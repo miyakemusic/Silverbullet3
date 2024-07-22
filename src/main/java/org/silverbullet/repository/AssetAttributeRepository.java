@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AssetAttributeRepository extends JpaRepository<AssetAttributeEntity, Long>{
 
+	AssetAttributeEntity findByAttribute(String attribute);
+
 }

@@ -7,6 +7,8 @@
 		<v-btn @click="$emit('onMenuChanged', 'hr')">Human Resource</v-btn>
 		<v-btn @click="$emit('onMenuChanged', 'asset')">Assets</v-btn>
 		<v-btn @click="$emit('onMenuChanged', 'test')">Test</v-btn>
+		<v-btn @click="$emit('onMenuChanged', 'regasset')">Equipments</v-btn>
+		<v-btn @click="$emit('onMenuChanged', 'equipment')">Equipments</v-btn>
 	</v-btn-toggle>
 	
     <v-spacer />
