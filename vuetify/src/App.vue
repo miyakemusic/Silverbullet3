@@ -14,6 +14,7 @@
 		<Asset v-if="currentMenu=='asset'"></Asset>
 		<Home v-if="currentMenu=='home'" @onProjectSelect="onProjectSelect"></Home>
 		<Test v-if="currentMenu=='test'" @onProjectSelect="onProjectSelect"></Test>
+		<Mop v-if="currentMenu=='mop'" @onProjectSelect="onProjectSelect"></Mop>
 		<TreeTest v-if="currentMenu=='treeTest'"></TreeTest>
 		<RegAsset v-if="currentMenu=='regasset'"></RegAsset>
 		<EquipmentManage v-if="currentMenu=='equipment'"></EquipmentManage>

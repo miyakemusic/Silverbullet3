@@ -14,8 +14,12 @@ import org.silverbullet.TreeConverter;
 import org.silverbullet.VuetifyTree;
 import org.silverbullet.dto.AlarmDto;
 import org.silverbullet.dto.CostDto;
+import org.silverbullet.dto.MopDto;
+import org.silverbullet.dto.MopLineDto;
+import org.silverbullet.dto.MopSection;
 import org.silverbullet.dto.ProgressHistoryDto;
 import org.silverbullet.dto.NodeSummaryDto;
+import org.silverbullet.dto.PairDto;
 import org.silverbullet.dto.ProgressDto;
 import org.silverbullet.dto.ProgressDto.Type;
 import org.silverbullet.dto.ScheduleDto;
@@ -322,5 +326,71 @@ public class ProjectRestController {
 		TestItemSummaryCollector collector = new TestItemSummaryCollector(nodeRepository, testItemRepository, nodeid);
 
 		return collector.getProgresses();
+	}
+
+		
+	private static List<MopDto> mops = Arrays.asList(
+			MopDto.builder()
+			.id(1L)
+			.title("FTTA Construction")
+			.image("https://www.khrista.co.id/wp-content/uploads/2016/03/ftta.png")
+			.description("Once the design of the network has been completed, the lifecycle of a network generally consists of three main phases: construction, activation and maintenance. The following sections highlight some the key testing elements that should be considered during the Construction and Service Validation Phase.")
+			.sections(Arrays.asList(
+					MopSection.builder()
+						.title("Step 1 ; Connector Cleanliness")
+						.image("https://www.khrista.co.id/wp-content/uploads/2016/03/connector-inspect.png")
+						.lines(Arrays.asList(
+							MopLineDto.builder().operation("Clean the connector[A] with the Connector Cleaner[B].").image("https://www.opticfibertool.com/cdn/shop/products/TB14zh3AVY7gK0jSZKzXcmikpXa_400x.jpg?v=1600273777").build(),
+							MopLineDto.builder().operation("Measure the Connector[A] with Fiber Inspection Probe[C].").build(),
+							MopLineDto.builder().operation("Connect the Connector[A] to the OTDR[D] and start Test").build()
+						)
+					).build(),
+						MopSection.builder()
+						.title("Step 2 ; Fiber Characterization")
+						.image("https://www.khrista.co.id/wp-content/uploads/2016/03/iloop.png")
+						.lines(Arrays.asList(
+							MopLineDto.builder().operation("Clean the connector[A] with the Connector Cleaner[B].").image("https://www.opticfibertool.com/cdn/shop/products/TB14zh3AVY7gK0jSZKzXcmikpXa_400x.jpg?v=1600273777").build(),
+							MopLineDto.builder().operation("Measure the Connector[A] with Fiber Inspection Probe[C].").build(),
+							MopLineDto.builder().operation("Connect the Connector[A] to the OTDR[D] and start Test").build()
+						)
+					).build()
+			)).build(),
+			MopDto.builder()
+			.id(2L)
+			.title("FTTA Service Activation")
+			.image("https://www.khrista.co.id/wp-content/uploads/2016/03/rrh-validation.png")
+			.description("Remote Radio Head (RRH) and Baseband Unit (BBU) Validation")
+			.sections(Arrays.asList(
+					MopSection.builder()
+						.title("Step 3 ; Connector Cleanliness")
+						.image("https://www.khrista.co.id/wp-content/uploads/2016/03/connector-inspect.png")
+						.lines(Arrays.asList(
+							MopLineDto.builder().operation("RRH validation using baseband-unit (BBU) emulation with a CPRI protocol analyzer at the specified rate (from base station)").build(),
+							MopLineDto.builder().operation("BBU validation using RRH emulation with a CPRI protocol analyzer at the specified rate (from base station)").build(),
+							MopLineDto.builder().operation("Verification that small form-factor pluggable (SFP) transceivers are installed and connected correctly").build(),
+							MopLineDto.builder().operation("Test at the bottom of the base station, or kilometers away").build()
+						)
+					).build(),
+						MopSection.builder()
+						.title("Step 4 ; Fiber Characterization")
+						.image("https://www.khrista.co.id/wp-content/uploads/2016/03/iloop.png")
+						.lines(Arrays.asList(
+							MopLineDto.builder().operation("Clean the connector[A] with the Connector Cleaner[B].").image("https://www.opticfibertool.com/cdn/shop/products/TB14zh3AVY7gK0jSZKzXcmikpXa_400x.jpg?v=1600273777").build(),
+							MopLineDto.builder().operation("Measure the Connector[A] with Fiber Inspection Probe[C].").build(),
+							MopLineDto.builder().operation("Connect the Connector[A] to the OTDR[D] and start Test").build()
+						)
+					).build()
+			)).build()
+			);
+	
+	@GetMapping("/mops/{id}")
+	public MopDto mops(Principal principal, @PathVariable(name="id") Long id) {
+		return mops.stream().filter(mop -> mop.getId().equals(id)).findFirst().get();
+	}
+	
+	@GetMapping("/mops/titles")
+	public List<PairDto> mopTitles(Principal principal) {
+
+		return mops.stream().map(mop -> PairDto.builder().key(mop.getId().toString()).value(mop.getTitle()).build()).collect(Collectors.toList());
 	}
 }
