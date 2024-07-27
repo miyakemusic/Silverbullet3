@@ -13,10 +13,12 @@ import App from './App.vue'
 // Composables
 import { createApp } from 'vue'
 import VueApexCharts from "vue3-apexcharts"
+import {JsonEditorPlugin} from 'vue3-ts-jsoneditor'
 
 const app = createApp(App)
 
 app.use(VueApexCharts)
+app.use(JsonEditorPlugin)
 
 registerPlugins(app)
 

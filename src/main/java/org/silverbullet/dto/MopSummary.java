@@ -1,6 +1,5 @@
 package org.silverbullet.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Builder;
@@ -9,15 +8,17 @@ import lombok.experimental.Tolerate;
 
 @Data
 @Builder
-public class MopDto {
+public class MopSummary {
 	@Tolerate
-	public MopDto() {}
+	public MopSummary() {}
 	
-//	private Long id;
-	private String title;
+	private Long id;
+	
 	private String category;
-	private String image;
-	private String description;
-	private List<MopSectionDto> sections;
+	
+	private String title;
+	
+	private String summary;
+	
 	private List<String> authors;
 }

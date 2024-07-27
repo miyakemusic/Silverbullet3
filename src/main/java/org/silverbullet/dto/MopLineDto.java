@@ -14,6 +14,17 @@ public class MopLineDto {
 	
 	private String operation;
 	
-	private String image;
+	private ImageDto target;
+	
+	private ImageDto tool;
+	
+	private CriteriaDto criteria;
+//	private String target;
+//	
+//	private String targetImage;
+//	
+//	private String tool;
+//	
+//	private String toolImage;
 
 }

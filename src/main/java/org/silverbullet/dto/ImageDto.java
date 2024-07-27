@@ -6,10 +6,10 @@ import lombok.experimental.Tolerate;
 
 @Data
 @Builder
-public class CostDto {
+public class ImageDto {
 	@Tolerate
-	public CostDto() {}
-	private String unit; //$
-	private int budget;
-	private int expenditure;
+	public ImageDto() {}
+	
+	private String title;
+	private String image;
 }

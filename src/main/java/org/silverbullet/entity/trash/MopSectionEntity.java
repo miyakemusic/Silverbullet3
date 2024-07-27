@@ -1,9 +1,10 @@
-package org.silverbullet.entity;
+package org.silverbullet.entity.trash;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
+import org.silverbullet.entity.MopEntity;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -20,26 +21,23 @@ import lombok.experimental.Tolerate;
 @Builder
 @Data
 @Entity
-@Table(name = "asset")
-public class AssetEntity {
+@Table(name = "mop_section")
+public class MopSectionEntity {
+	@Tolerate
+	public MopSectionEntity() {}
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Tolerate
-	public AssetEntity() {}
+	private String title;
 	
-	private String name;
+	private List<String> images;
 	
-	private String family;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "mop_id")
+	private MopEntity mop;
 	
-	private String image;
-	
-	private String note;
-	@ManyToOne
-	@JoinColumn(name = "manufacturer_id")
-	private ManufacturerEntity manufacturer;
-	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "asset", cascade = CascadeType.ALL)
-	private List<RelationAssetAttributeEntity> relationAttribute = new ArrayList<>();
+	@OneToMany(fetch = FetchType.LAZY, mappedBy="mopSection")
+	private List<MopLineEntity> lines = new ArrayList<>();
 }

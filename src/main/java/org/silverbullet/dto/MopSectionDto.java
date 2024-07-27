@@ -9,15 +9,13 @@ import lombok.experimental.Tolerate;
 
 @Data
 @Builder
-public class MopDto {
+public class MopSectionDto {
 	@Tolerate
-	public MopDto() {}
+	public MopSectionDto() {}
 	
-//	private Long id;
 	private String title;
-	private String category;
-	private String image;
-	private String description;
-	private List<MopSectionDto> sections;
-	private List<String> authors;
+	
+	private List<String> images;
+	
+	private List<MopLineDto> lines = new ArrayList<>();
 }

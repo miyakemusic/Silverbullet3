@@ -9,13 +9,10 @@ import lombok.experimental.Tolerate;
 
 @Data
 @Builder
-public class MopSection {
+public class CriteriaDto {
 	@Tolerate
-	public MopSection() {}
+	public CriteriaDto() {}
 	
-	private String title;
+	private List<String> criteria = new ArrayList<>();
 	
-	private String image;
-	
-	private List<MopLineDto> lines = new ArrayList<>();
 }
