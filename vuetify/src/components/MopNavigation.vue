@@ -50,7 +50,6 @@
 	  max-width="300"
 	>
 
-
 	<v-list>
 		<v-list-subheader>Contents</v-list-subheader>
 		<v-list-item v-if="props.mop != null" v-for="section in props.mop.sections" 

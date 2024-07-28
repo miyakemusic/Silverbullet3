@@ -19,8 +19,9 @@ import org.silverbullet.dto.MopDto;
 import org.silverbullet.dto.MopLineDto;
 import org.silverbullet.dto.MopSectionDto;
 import org.silverbullet.dto.MopSummary;
+import org.silverbullet.dto.NodeDto;
 import org.silverbullet.dto.ProgressHistoryDto;
-import org.silverbullet.dto.NodeSummaryDto;
+import org.silverbullet.dto.NodeDetailDto;
 import org.silverbullet.dto.PairDto;
 import org.silverbullet.dto.ProgressDto;
 import org.silverbullet.dto.ProgressDto.Type;
@@ -40,6 +41,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -211,11 +214,11 @@ public class ProjectRestController {
 	@GetMapping("/tree/{id}")
 	public List<VuetifyTree> vuetifyTree(Principal princiapl, @PathVariable("id") String id) {
 		NodeEntity rootNode = projectRepository.findById(Long.valueOf(id)).get().getNode();
-//		List<NodeEntity> root = projectRepository.findAll().stream().map(p -> p.getNode()).collect(Collectors.toList());
-		//List<NodeEntity> root = nodeRepository.findByType("project");
-		List<VuetifyTree> ret = new TreeConverter().convertTreeNode(rootNode.getChildren());
+
+		//List<VuetifyTree> ret = new TreeConverter().convertTreeNode(rootNode.getChildren());
+		//return ret;
 		
-		return ret;
+		return Arrays.asList(new TreeConverter().convertTreeNode(rootNode));
 	}
 	
 //	@DeleteMapping("/v1/tree/{id}")
@@ -247,13 +250,13 @@ public class ProjectRestController {
 		
 	}
 
-	@GetMapping("/nodeSummary/{nodeid}")
-	public NodeSummaryDto nodeDtail(Principal princiapl, @PathVariable("nodeid") Long nodeid) {
+	@GetMapping("/nodeDetail/{nodeid}")
+	public NodeDetailDto nodeDtail(Principal princiapl, @PathVariable("nodeid") Long nodeid) {
 		NodeEntity node = nodeRepository.findById(nodeid).get();
 		TestItemCollector collector = new TestItemCollector(nodeRepository, testItemRepository, nodeid);
 		List<TestItemDto> testItems = collector.getTestItems();
 		
-		return NodeSummaryDto.builder()
+		return NodeDetailDto.builder()
 				.name(node.getName())
 				.testPointProgress(	collector.progress())
 				.testItems(testItems)
@@ -263,8 +266,6 @@ public class ProjectRestController {
 				.build();
 	}
 	
-
-
 	@GetMapping("/project/{id}")
 	public ProjectSummaryDto getProject(Principal princiapl, @PathVariable("id") Long id) {		
 		return projectRepository.findById(id).map(
@@ -330,6 +331,37 @@ public class ProjectRestController {
 		return collector.getProgresses();
 	}
 
+	
+	@PostMapping("/childNode/{parentid}")
+	public String childNode(Principal princiapl, @PathVariable("parentid") Long parentid, @RequestBody NodeDto dto) {
+		NodeEntity parent = this.nodeRepository.findById(parentid).get();
 		
-
+		this.nodeRepository.save(NodeEntity.builder()
+				.parentNode(parent)
+				.name(dto.getName())
+				.type(dto.getType())
+				.build());
+		return "OK";
+	}
+	@GetMapping("/node/{id}")
+	public NodeDto getNode(Principal princiapl, @PathVariable("id") Long id) {
+		NodeEntity node = this.nodeRepository.findById(id).get();
+		
+		return NodeDto.builder().name(node.getName()).type(node.getType()).build();
+	}
+	@PostMapping("/node/{id}")
+	public String node(Principal princiapl, @PathVariable("id") Long id, @RequestBody NodeDto dto) {
+		NodeEntity entity = this.nodeRepository.findById(id).get();
+		entity.setName(dto.getName());
+		entity.setType(dto.getType());
+		this.nodeRepository.save(entity);
+		return "OK";
+	}
+	@DeleteMapping("/node/{id}")
+	public String deleteNode(Principal princiapl, @PathVariable("id") Long id) {
+//		NodeEntity node = this.nodeRepository.findById(id).get();
+		
+		this.nodeRepository.deleteById(id);
+		return "OK";
+	}
 }

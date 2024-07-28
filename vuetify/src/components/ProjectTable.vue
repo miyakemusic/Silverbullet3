@@ -100,7 +100,7 @@
   const nodeName = ref()
   
   watch(() => props.selectedNode, () => {
-	axios.get(convertUrl('/api/project/v1/nodeSummary/' + props.selectedNode))
+	axios.get(convertUrl('/api/project/v1/nodeDetail/' + props.selectedNode))
 	.then(function (response) {
 
 	})

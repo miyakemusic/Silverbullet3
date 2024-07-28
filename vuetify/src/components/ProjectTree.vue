@@ -1,7 +1,10 @@
 <template>
 	<v-btn @click="initTree">Init</v-btn>
 	<v-btn @click="getTree">Get</v-btn>
-	<v-btn @click="deleteNode">Delete</v-btn>
+	<v-btn @click="deleteNode">Delete All</v-btn>
+	<v-btn @click="onAddNode">Add</v-btn>
+	<v-btn @click="onDeleteNode">Delete</v-btn>
+	<v-btn @click="onEditNode">Edit</v-btn>
   <v-treeview
   	v-model:activated="active"
     v-model="tree"
@@ -25,9 +28,11 @@
   </template>
 
   </v-treeview>
+  
+  <NodeDialog @on-ok="onOk" :open="dialog" :target="target" :name="nodeName" :type="nodeType"></NodeDialog>
 </template>
 
-<script setup>
+<script setup lang="ts">
   import { ref } from 'vue'
   import { VTreeview } from 'vuetify/labs/VTreeview'
   import axios from 'axios'
@@ -54,24 +59,15 @@
       title: '.git',
 	  file: 'project'
     },
-    {
-		id: 2,
-      title: 'node_modules',
-	  file: 'project'
-    },
-	{
-		id: 5,
-	  title: 'node_modules',
-	  file: 'project'
-	},
   ])
-  const selected = computed(() => {
-    console.log(active.value)
-    if (!active.value.length) return undefined
-    const id = active.value[0]
-	return id;
-    //return users.value.find(user => user.id === id)
-  })  
+   
+  const current = ref()
+  
+  const dialog = ref(false)
+  const nodeName = ref('Node Name')
+  const nodeType = ref("node")
+  const target = ref('new')
+  
   onMounted(() => {
 	getTree();
   })
@@ -91,11 +87,10 @@
   
   function getTree() {
   	axios.get(convertUrl('/api/project/v1/tree/' + props.projectid))
-  	  .then(function (response) {
+  	  .then(response => {
 		items.value = response.data;
-  	    console.log(response);
   	  })
-  	  .catch(function (error) {
+  	  .catch(error => {
   	    console.log(error);
   	  })
   	  .finally(function () {
@@ -113,14 +108,71 @@
 	.finally(function () {
 	});	
   }
-  
+ 
   function onNodeClicked(item) {
-	
-	var id = item[0];
+	var id = item[0]//.id;
+	if (id != null) {
+		current.value = id
+	}
+	else {
+		//current.value = 	
+	}
 	emit('onNodeSelect', id)
+  }
+  
+  function onAddNode() {
+	target.value = 'new'
+	dialog.value = !dialog.value
+  }
+  
+  function onDeleteNode() {
+	  axios.delete(convertUrl('/api/project/v1/node/' + current.value))
+	  .then(function (response) {
+	  	getTree();
+	  })
+	  .catch(function (error) {
+	    console.log(error);
+	  })
+	  .finally(function () {
+	  });	
+  }
+  
+  function onEditNode() {
+	axios.get(convertUrl('/api/project/v1/node/' + current.value))
+	.then(function (response) {
+		nodeName.value = response.data.name
+		nodeType.value = response.data.type
+		
+		target.value = 'edit'
+		dialog.value = !dialog.value
+	})
+	.catch(function (error) {
+	  console.log(error);
+	})
+	.finally(function () {
+	});	
+	
+
+  }
+  
+  function onOk(nodeInfo) {
+	const obj = { name: nodeInfo.name, type: nodeInfo.type }
+	var path;
+	if (target.value == 'new') {
+		path = 'childNode'
+	}
+	else {
+		path = 'node'
+	}
+	axios.post(convertUrl('/api/project/v1/' + path + '/' + current.value), obj)
+	.then(function (response) {
+		getTree();
+	})
+	.catch(function (error) {
+	  console.log(error);
+	})
+	.finally(function () {
+	});	
   }
 </script>
 
-<script>
-
-</script>

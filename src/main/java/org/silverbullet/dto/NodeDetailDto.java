@@ -8,9 +8,9 @@ import lombok.experimental.Tolerate;
 
 @Data
 @Builder
-public class NodeSummaryDto {
+public class NodeDetailDto {
 	@Tolerate
-	public NodeSummaryDto() {}
+	public NodeDetailDto() {}
 	
 	private Long id;
 	private String name;

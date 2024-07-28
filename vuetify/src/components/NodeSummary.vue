@@ -1,6 +1,9 @@
 <template>
 	<v-row>
 		<v-col>
+			<NodeProp :nodeid="props.nodeid"></NodeProp>
+		</v-col>
+		<v-col>
 			<v-card width="500" variant="outlined" class="ma-2">
 				<ProgressTable :nodeid="props.nodeid"></ProgressTable>
 			</v-card>

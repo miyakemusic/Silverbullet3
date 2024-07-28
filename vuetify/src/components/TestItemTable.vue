@@ -22,7 +22,7 @@ onMounted(() => {
 });
 
 function retrieve() {
-	axios.get(convertUrl('/api/project/v1/nodeSummary/' + props.nodeid))
+	axios.get(convertUrl('/api/project/v1/nodeDetail/' + props.nodeid))
 	.then(function (response) {
 		nodeName.value = response.data.name
 		testItems.value = response.data.testItems
