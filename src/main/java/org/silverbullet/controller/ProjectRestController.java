@@ -28,10 +28,14 @@ import org.silverbullet.dto.ProgressDto.Type;
 import org.silverbullet.dto.ScheduleDto;
 import org.silverbullet.dto.TestItemDto;
 import org.silverbullet.dto.TestPointProgressDto;
+import org.silverbullet.entity.MopEntity;
 import org.silverbullet.entity.NodeEntity;
 import org.silverbullet.entity.ProjectEntity;
 import org.silverbullet.entity.TestItemEntity;
 import org.silverbullet.entity.TestStatus;
+import org.silverbullet.mapper.MopMapper;
+import org.silverbullet.mapper.NodeMapper;
+import org.silverbullet.repository.MopRepository;
 import org.silverbullet.repository.NodeRepository;
 import org.silverbullet.repository.ProjectRepository;
 import org.silverbullet.repository.TestItemRepository;
@@ -60,6 +64,15 @@ public class ProjectRestController {
 	
 	@Autowired
 	private TestItemRepository testItemRepository;
+	
+	@Autowired
+	private MopRepository mopRepository;
+	
+	@Autowired
+	private MopMapper mopMapper;
+	
+	@Autowired
+	private NodeMapper nodeMapper;
 	
 	@GetMapping("/nodeInfo/{nodeid}")
 	public String nodeInfo(Principal principal, @PathVariable("nodeid") Long nodeid) {
@@ -343,20 +356,34 @@ public class ProjectRestController {
 				.build());
 		return "OK";
 	}
+	
 	@GetMapping("/node/{id}")
 	public NodeDto getNode(Principal princiapl, @PathVariable("id") Long id) {
 		NodeEntity node = this.nodeRepository.findById(id).get();
 		
-		return NodeDto.builder().name(node.getName()).type(node.getType()).build();
+		return nodeMapper.toDto(node);
 	}
+	
 	@PostMapping("/node/{id}")
 	public String node(Principal princiapl, @PathVariable("id") Long id, @RequestBody NodeDto dto) {
 		NodeEntity entity = this.nodeRepository.findById(id).get();
 		entity.setName(dto.getName());
 		entity.setType(dto.getType());
+
 		this.nodeRepository.save(entity);
 		return "OK";
 	}
+	
+	@GetMapping("/node/{id}/mop/{mopid}")
+	public NodeDto nodeMop(Principal princiapl, @PathVariable("id") Long id, @PathVariable("mopid") Long mopid) {
+		NodeEntity entity = this.nodeRepository.findById(id).get();
+		MopEntity mop = this.mopRepository.findById(mopid).get();
+		entity.setMop(mop);
+		
+		this.nodeRepository.save(entity);
+		return nodeMapper.toDto(entity);
+	}
+	
 	@DeleteMapping("/node/{id}")
 	public String deleteNode(Principal princiapl, @PathVariable("id") Long id) {
 //		NodeEntity node = this.nodeRepository.findById(id).get();

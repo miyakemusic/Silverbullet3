@@ -29,6 +29,8 @@ public class MopEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	private String name;
+	
 	@Column(length=10485760)
 	private String json;
 //	private String title;

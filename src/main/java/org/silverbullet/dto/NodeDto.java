@@ -14,4 +14,6 @@ public class NodeDto {
 	
 	private String name;
 	private String type;
+	private PairDto mop;
+	
 }

@@ -13,7 +13,7 @@ public class MopDto {
 	@Tolerate
 	public MopDto() {}
 	
-//	private Long id;
+	private Long id;
 	private String title;
 	private String category;
 	private String image;

@@ -292,11 +292,12 @@ public class MopRestController {
 	public String duplicate(Principal principal, @PathVariable("id") Long id, @RequestBody MopDto mop) throws JsonProcessingException {
 		String json = new ObjectMapper().writeValueAsString(mop);
 		if (id == -1) {
-			this.mopRepository.save(MopEntity.builder().json(json).build());
+			this.mopRepository.save(MopEntity.builder().name(mop.getTitle()).json(json).build());
 		}
 		else {
 			MopEntity e = this.mopRepository.findById(id).get();
 			e.setJson(json);
+			e.setName(mop.getTitle());
 			this.mopRepository.save(e);
 		}
 		

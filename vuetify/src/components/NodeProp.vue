@@ -13,8 +13,8 @@
 			<v-col>
 				<v-btn text="MOP" @click="onMopClick"></v-btn>
 			</v-col>
-			<v-col>
-				{{ mop }}
+			<v-col v-if="dto.mop != null">
+				{{ dto.mop.value }}
 			</v-col>
 		</v-row>
 		</v-card-text>
@@ -31,7 +31,7 @@ import convertUrl from './MyUrl.ts'
 import MopListDialog from './MopListDialog.vue';
 
 const props = defineProps(['nodeid'])
-const dto = ref({name:'', type:''})
+const dto = ref({name:'', type:'', mop:{value:''}})
 const open = ref(false)
 const mop = ref()
 
@@ -61,5 +61,14 @@ function retrieve() {
 
 function onSelect(id) {
 	mop.value = id
+	axios.get(convertUrl('/api/project/v1/node/' + props.nodeid + '/mop/' + id))
+	.then(function (response) {
+		dto.value = response.data
+	})
+	.catch(function (error) {
+	  console.log(error);
+	})
+	.finally(function () {
+	});
 }
  </script>

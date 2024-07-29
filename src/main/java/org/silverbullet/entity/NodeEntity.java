@@ -44,4 +44,7 @@ public class NodeEntity {
 	@JoinColumn(name = "parentnode_id")
 	private NodeEntity parentNode;
 
+	@ManyToOne
+	@JoinColumn(name = "mop_id")
+	private MopEntity mop;
 }
