@@ -3,6 +3,7 @@ package org.silverbullet.entity;
 import java.util.Date;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -32,6 +33,8 @@ public class ProjectEntity {
 	
 	private String description;
 	
+	private String area;
+	
 	private Date start;
 	
 	private Date deadline;
@@ -42,7 +45,7 @@ public class ProjectEntity {
 	
 	private int expenditure;
 	
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "node_id")
 	private NodeEntity node;
 }

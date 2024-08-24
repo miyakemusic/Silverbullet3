@@ -2,13 +2,20 @@ package org.silverbullet;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.silverbullet.dto.MopDto;
 import org.silverbullet.dto.TestItemDto;
 import org.silverbullet.dto.TestPointProgressDto;
 import org.silverbullet.entity.NodeEntity;
+import org.silverbullet.entity.TestItemEntity;
 import org.silverbullet.entity.TestStatus;
+import org.silverbullet.mapper.JsonTestItemConverter;
 import org.silverbullet.repository.NodeRepository;
 import org.silverbullet.repository.TestItemRepository;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.Getter;
 
@@ -16,11 +23,13 @@ import lombok.Getter;
 public class TestItemCollector {
 
 	private List<TestItemDto> testItems = new ArrayList<>();
-	private TestItemRepository testItemRepository;
+//	private TestItemRepository testItemRepository;
 	private NodeEntity rootNode;
 	
+	private JsonTestItemConverter testItemConverter = new JsonTestItemConverter();
+	
 	public TestItemCollector(NodeRepository nodeRepository, TestItemRepository testItemRepository, Long nodeid) {
-		this.testItemRepository = testItemRepository;
+//		this.testItemRepository = testItemRepository;
 		rootNode = nodeRepository.findById(nodeid).get();
 		
 		colleceRecursive(rootNode);
@@ -28,9 +37,28 @@ public class TestItemCollector {
 
 
 	private void colleceRecursive(NodeEntity node) {
-		testItemRepository.findByNode_id(node.getId()).forEach(t -> testItems.add(TestItemDto.builder().id(t.getId()).node(node.getName()).name(t.getName()).status(t.getStatus().name()).build()));
-		for (NodeEntity c : node.getChildren()) {
-			colleceRecursive(c);
+		if (node.getType().equals("dut")) {
+			
+			if (node.getMop() == null) {
+				return;
+			}
+//		System.out.println(node.getName());
+			List<TestItemEntity> ts = testItemConverter.testItems(node.getMop().getJson());// testItemRepository.findByNode_id(node.getId());
+			ts.forEach(t -> testItems.add(TestItemDto.builder()
+					.node(node.getName())
+					.name(t.getName())
+					.criteria(t.getCriteria())
+	//				.key(t.getKey())
+					.result(t.getResult())
+					.status(t.getStatus().name())
+					.tool(t.getTool())
+					.build()));
+		}
+		else {
+			
+			for (NodeEntity c : node.getChildren()) {
+				colleceRecursive(c);
+			}
 		}
 	}
 	

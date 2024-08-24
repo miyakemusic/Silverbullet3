@@ -10,11 +10,17 @@ public class TestItemDto {
 	@Tolerate
 	public TestItemDto() {}
 	
-	private Long id;
+	private String key;
 	
 	private String node;
 	
 	private String name;
 	
 	private String status;
+	
+	private String criteria;
+	
+	private String tool;
+	
+	private String result;
 }

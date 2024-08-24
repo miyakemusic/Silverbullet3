@@ -1,10 +1,11 @@
 <template>
-	<v-btn @click="initTree">Init</v-btn>
-	<v-btn @click="getTree">Get</v-btn>
-	<v-btn @click="deleteNode">Delete All</v-btn>
-	<v-btn @click="onAddNode">Add</v-btn>
-	<v-btn @click="onDeleteNode">Delete</v-btn>
-	<v-btn @click="onEditNode">Edit</v-btn>
+	<v-btn v-if="debug==true" @click="initTree">Init</v-btn>
+	<v-btn v-if="debug==true" @click="getTree">Get</v-btn>
+	<v-btn v-if="debug==true" @click="deleteNode">Delete All</v-btn>
+	<v-btn @click="onAddNode" append-icon="mdi-folder-plus"></v-btn>
+	<v-btn @click="onAddDut" append-icon="mdi-file-document-plus-outline"></v-btn>
+	<v-btn @click="onDeleteNode" append-icon="mdi-trash-can-outline"></v-btn>
+	<v-btn @click="onEditNode" append-icon="mdi-pencil"></v-btn>
   <v-treeview
   	v-model:activated="active"
     v-model="tree"
@@ -18,9 +19,9 @@
 	@update:open="onNodeClicked"
 	@update:activated="onNodeClicked"
   >
-  <template v-slot:prepend="{ item, open }">
-    <v-icon v-if="item.file === 'node'">
-      {{ open ? 'mdi-folder-open' : 'mdi-folder' }}
+  <template v-slot:prepend="{ item }">
+    <v-icon v-if="item.file === 'folder'">
+
     </v-icon>
     <v-icon v-else>
       {{ files[item.file] }}
@@ -54,20 +55,16 @@
   })
   const tree = ref([])
   const items = ref([
-    {
-		id: 1,
-      title: '.git',
-	  file: 'project'
-    },
   ])
-   
+  
   const current = ref()
   
   const dialog = ref(false)
   const nodeName = ref('Node Name')
-  const nodeType = ref("node")
+  const nodeType = ref("folder")
   const target = ref('new')
   
+  const debug = ref(false)
   onMounted(() => {
 	getTree();
   })
@@ -122,7 +119,14 @@
   
   function onAddNode() {
 	target.value = 'new'
+	nodeType.value = "folder"
 	dialog.value = !dialog.value
+  }
+  
+  function onAddDut() {
+  	target.value = 'new'
+	nodeType.value= "dut"
+  	dialog.value = !dialog.value
   }
   
   function onDeleteNode() {

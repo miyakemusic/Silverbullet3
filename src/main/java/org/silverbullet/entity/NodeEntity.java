@@ -37,7 +37,7 @@ public class NodeEntity {
 	@OrderBy("name ASC")
 	private List<NodeEntity> children;
 	
-//	@OneToMany(fetch = FetchType.LAZY, mappedBy = "parentNode", cascade = CascadeType.ALL)
+//	@OneToMany(fetch = FetchType.LAZY, mappedBy = "node", cascade = CascadeType.ALL)
 //	private List<TestItemEntity> testItems;
 	
 	@ManyToOne

@@ -1,19 +1,28 @@
 <template>
-	<v-text-field
-	  v-model="search"
-	  label="Search"
-	  prepend-inner-icon="mdi-magnify"
-	  variant="outlined"
-	  hide-details
-	  single-line
-	></v-text-field>
-	<v-data-table
-	  :items="items"
-	  :items-per-page="50"
-	  :search="search"
-	  class="elevation-1 my-3 mx-auto"
-	  @click:row="clickRow"
-	></v-data-table>
+	<v-row>
+
+		<v-col cols="3">
+			<v-text-field
+			  v-model="search"
+			  label="Search"
+			  prepend-inner-icon="mdi-magnify"
+			  variant="outlined"
+			  hide-details
+			  single-line
+			></v-text-field>
+		</v-col>
+	</v-row>
+	<v-row>
+		<v-col>
+			<v-data-table
+			  :items="items"
+			  :items-per-page="50"
+			  :search="search"
+			  class="elevation-1 my-3 mx-auto"
+			  @click:row="clickRow"
+			></v-data-table>
+		</v-col>
+	</v-row>
 </template>
 
 <script setup lang="ts">

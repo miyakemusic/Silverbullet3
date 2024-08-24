@@ -1,4 +1,5 @@
 <template>
+	Test Item Summary
 	<v-data-table 
 		:items="testItems" density="compact">
 	</v-data-table>

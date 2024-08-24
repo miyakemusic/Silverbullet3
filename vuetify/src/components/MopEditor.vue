@@ -1,8 +1,8 @@
 <template>
 	<v-btn text="Overwrite" @click="onOverwrite"></v-btn>
 	<v-btn text="Save New" @click="onDuplicate"></v-btn>
+	<v-btn text="Delete" @click="onDelete"></v-btn>
 	<json-editor
-	  
 	  mode="tree"
 	  v-model:json="jsonData" 
 	/>
@@ -34,6 +34,18 @@ function onOverwrite() {
 
 function onDuplicate() {
 	post('-1')
+}
+
+function onDelete() {
+	var url = convertUrl('/api/mop/v1/mop/' + props.mopid)
+	
+	axios.delete(url)
+		.then(res=>{
+			console.log(res)
+	
+		}).catch(err=>{
+			alert(err.response.data)
+		})	
 }
 
 function post(path: string) {

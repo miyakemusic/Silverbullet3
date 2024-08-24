@@ -1,6 +1,14 @@
 package org.silverbullet.entity;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import org.silverbullet.dto.MopDto;
+import org.silverbullet.dto.TestItemDto;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -12,6 +20,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Tolerate;
@@ -33,14 +42,19 @@ public class MopEntity {
 	
 	@Column(length=10485760)
 	private String json;
-//	private String title;
-//	private String category;
-//	private String image;
-//	private String description;
 	
-//	@OneToMany(fetch = FetchType.LAZY, mappedBy = "mop", cascade = CascadeType.ALL)
-//	private List<MopSectionEntity> sections;
-//	
-//	@OneToMany(fetch = FetchType.LAZY, mappedBy = "mop", cascade = CascadeType.ALL)
-//	private List<RelationMopUserEntity> relationMopUser;
+//	public List<TestItemEntity> testItems() {
+//		try {
+//			MopDto dto = new ObjectMapper().readValue(json, MopDto.class);
+//			return dto.getSections().stream().flatMap(sec -> sec.getLines().stream()).map(line -> TestItemEntity.builder()
+//					.name(line.getTarget() != null ? line.getTarget().getTitle() : "")
+//					.status(TestStatus.NOT_YET)
+//					
+//					.build()).collect(Collectors.toList());
+//		} catch (JsonProcessingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		return new ArrayList<>();
+//	}
 }

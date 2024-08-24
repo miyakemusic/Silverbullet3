@@ -13,4 +13,6 @@ public interface NodeRepository extends JpaRepository<NodeEntity, Long>{
 
 	List<NodeEntity> findByType(String string);
 
+	List<NodeEntity> findByMop_id(Long id);
+
 }

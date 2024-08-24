@@ -1,6 +1,45 @@
 <template>
-	{{ projectName }}
 	<v-row>
+		<v-col>
+			<v-card 
+				title="Project Information"
+				v-if="project!=null" 
+				min-width="700"
+				>
+				<template v-slot:title>
+					<v-row>
+						<v-col>
+							<v-text-field label="Project Name" v-model="project.name"></v-text-field>
+						</v-col>
+						<v-col cols="2">
+							<v-btn text="Save" icon="mdi-content-save" @click="saveProjectInfo"></v-btn>
+						</v-col>
+						<v-col cols="2">
+							<v-btn text="Delete" icon="mdi-trash-can-outline" @click="deleteProject"></v-btn>
+						</v-col>
+					</v-row>
+				</template>
+				
+				<template v-slot:text>
+					<v-textarea label="Description" v-model="project.description"></v-textarea>
+					<v-text-field label="Area" v-model="project.area"></v-text-field>
+					<v-row>
+						<v-col cols="3">
+							<v-date-input label="Start Date" v-model="startDate"></v-date-input>
+						</v-col>
+						<v-col cols="3">
+							<v-date-input label="Complete Date" v-model="deadlineDate"></v-date-input>			
+						</v-col>
+						<v-col cols="3">
+							<v-text-field label="Budget (USD)" v-model="project.cost.budget" type="number"></v-text-field>
+						</v-col>
+						<v-col cols="1">
+						
+						</v-col>
+					</v-row>
+				</template>
+			</v-card>
+		</v-col>
 		<v-col>
 			<v-card width="500" variant="outlined" class="ma-2">
 				<ProgressTable :projectid="projectid"></ProgressTable>
@@ -27,8 +66,8 @@
 					</thead>
 					<tbody>
 						<tr>
-							<td>{{ progress.cost.unit }} {{progress.cost.budget}}</td>
-							<td>{{progress.cost.unit }} {{ progress.cost.expenditure }} ({{ progress.cost.expenditure*100/progress.cost.budget }} %)</td>
+							<td> {{progress.cost.budget}} {{ progress.cost.unit }}</td>
+							<td>{{ progress.cost.expenditure }}{{progress.cost.unit }} ({{ progress.cost.expenditure*100/progress.cost.budget }} %)</td>
 						</tr>
 					</tbody>
 				</v-table>
@@ -47,7 +86,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-for="(item, index) in duts" :key="id">
+						<tr v-for="(item, index) in duts">
 						  <td>{{ item.name }}</td>
 						  <td>{{ item.quantity }}</td>
 						  <td>{{ item.done }} ( {{ item.done *100 / item.quantity }} %)</td>
@@ -62,7 +101,7 @@
 			<v-card width="400" variant="outlined" class="ma-2">
 				Testers
 				<v-data-table 
-					:items="testers" hide-default-footer density="compact" @click:row="handleClick">
+					:items="testers" hide-default-footer density="compact">
 				</v-data-table>
 			</v-card>
 		</v-col>
@@ -71,7 +110,7 @@
 			<v-card width="400" variant="outlined" class="ma-2">
 				Human Resource
 				<v-data-table 
-					:items="humanresource" hide-default-footer density="compact" @click:row="handleClick">
+					:items="humanresource" hide-default-footer density="compact">
 				</v-data-table>
 			</v-card>
 		</v-col>
@@ -83,34 +122,38 @@
 	<v-card width="800" variant="outlined" class="ma-2">
 		<ProgressLineChart :projectid="projectid" :url="'/api/project/v1/progress/item/history'" :title="'Burndown'" :unit="'Items'"></ProgressLineChart>
 	</v-card>
+
 </template>
 
 <script setup>
-  import { ref, watch } from 'vue'
+  import { ref, watch, onMounted } from 'vue'
   import axios from 'axios'
   import convertUrl from './MyUrl.ts'
-  
-  const props = defineProps(['projectid', 'selectedNode'])
+  import { VDateInput } from 'vuetify/labs/VDateInput'
+//  import VueDatePicker from '@vuepic/vue-datepicker';
+//  import '@vuepic/vue-datepicker/dist/main.css'; 
+
+  const props = defineProps(['projectid'])
   
   const projectid = ref(props.projectid)
-  const selectedNode = ref(props.selectedNode)
-  const projectName = ref();
+  const selectedNode = ref()
+  const project = ref()
+  
   const search = ref('')
   const items = [ ]
   const nodeName = ref()
   
+  const startDate = ref(new Date('8/4/2024'))
+  const deadlineDate = ref(new Date('8/4/2024'))
+  
   watch(() => props.selectedNode, () => {
-	axios.get(convertUrl('/api/project/v1/nodeDetail/' + props.selectedNode))
-	.then(function (response) {
 
-	})
-	.catch(function (error) {
-	  console.log(error);
-	})
-	.finally(function () {
-	});	
   });
 
+  onMounted(() => {
+  	retrieve()
+  });
+  
   const progress = ref({
 	items: {
 		testPoints: 1024,
@@ -157,17 +200,43 @@
 		{id: 5, name: 'Tupac Amaru Shakur', role: 'Technician'},
 	])
 	
-	axios.get(convertUrl('/api/project/v1/project/' + 	projectid.value))
-	.then(function (response) {
-		projectName.value = response.data.name;
-	})
-	.catch(function (error) {
-	  console.log(error);
-	})
-	.finally(function () {
-	});		
-</script>
+	function retrieve() {
+		axios.get(convertUrl('/api/project/v1/project/' + 	projectid.value))
+		.then(function (response) {
+			project.value = response.data;
+			startDate.value = new Date(project.value.schedule.start)
+			deadlineDate.value = new Date(project.value.schedule.deadline)
+		})
+		.catch(function (error) {
+		  console.log(error);
+		})
+		.finally(function () {
+		});		
+	}
+	
+	function saveProjectInfo() {
+		project.value.schedule.start = startDate.value
+		project.value.schedule.deadline = deadlineDate.value
+		axios.post(convertUrl('/api/project/v1/project/' + 	projectid.value), project.value)
+		.then(function (response) {
 
-<script>
-
+		})
+		.catch(function (error) {
+		  console.log(error);
+		})
+		.finally(function () {
+		});			
+	}
+	
+	function deleteProject() {
+		axios.delete(convertUrl('/api/project/v1/project/' + 	projectid.value))
+		.then(function (response) {
+		
+		})
+		.catch(function (error) {
+		  console.log(error);
+		})
+		.finally(function () {
+		});			
+	}
 </script>

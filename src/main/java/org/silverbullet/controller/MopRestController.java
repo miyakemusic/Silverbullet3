@@ -15,11 +15,15 @@ import org.silverbullet.dto.MopSectionDto;
 import org.silverbullet.dto.MopSummary;
 import org.silverbullet.dto.PairDto;
 import org.silverbullet.entity.MopEntity;
+import org.silverbullet.entity.NodeEntity;
+import org.silverbullet.entity.TestItemEntity;
 import org.silverbullet.entity.UserEntity;
 import org.silverbullet.entity.trash.MopLineEntity;
 import org.silverbullet.entity.trash.MopSectionEntity;
 import org.silverbullet.entity.trash.RelationMopUserEntity;
 import org.silverbullet.repository.MopRepository;
+import org.silverbullet.repository.NodeRepository;
+import org.silverbullet.repository.TestItemRepository;
 import org.silverbullet.repository.UserRepository;
 import org.silverbullet.repository.trash.MopLineRepository;
 import org.silverbullet.repository.trash.MopSectionRepository;
@@ -57,14 +61,14 @@ public class MopRestController {
 //								"https://www.google.com/url?sa=i&url=https%3A%2F%2Fkalugastroit-40.ru%2F%3Fm%3Dfiber-to-antenna-ftta-antenna-fiber-optic-fiber-optic-0-mm-zvR85NcJ&psig=AOvVaw0yu5-H9LQQ31StjQIu9uX1&ust=1722041695173000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCNDz8K-_w4cDFQAAAAAdAAAAABBO"
 								))
 						.lines(Arrays.asList(
-							MopLineDto.builder().number(1).operation("Clean the connector[A] with the Connector Cleaner[B].").target(ImageDto.builder().title("Connector[A]").image("https://resource.fs.com/mall/mainImg/20220711182057s9mjl7.jpg").build()).tool(ImageDto.builder().title("Cleaner").image("https://www.opticfibertool.com/cdn/shop/products/TB14zh3AVY7gK0jSZKzXcmikpXa_400x.jpg?v=1600273777").build()).build(),
-							MopLineDto.builder().number(2).operation("Measure the Connector[A] with Fiber Inspection Probe[C].").target(ImageDto.builder().title("Connector[B]").image("https://resource.fs.com/mall/mainImg/20220711182057s9mjl7.jpg").build()).tool(ImageDto.builder().title("FIP").image("https://opticom.bg/images/2/973561890856bbe258abf964e8931f98/fip-400b-mf-usb-2-1550.jpg").build()).criteria(CriteriaDto.builder().criteria(Arrays.asList("IEC 61300-3-35:2022")).build()).build(),
-							MopLineDto.builder().number(2).operation("Measure the Connector[A] with Fiber Inspection Probe[C].").target(ImageDto.builder().title("Connector[B]").image("https://resource.fs.com/mall/mainImg/20220711182057s9mjl7.jpg").build()).tool(ImageDto.builder().title("FIP").image("https://opticom.bg/images/2/973561890856bbe258abf964e8931f98/fip-400b-mf-usb-2-1550.jpg").build()).criteria(CriteriaDto.builder().criteria(Arrays.asList("IEC 61300-3-35:2022")).build()).build(),
-							MopLineDto.builder().number(2).operation("Measure the Connector[A] with Fiber Inspection Probe[C].").target(ImageDto.builder().title("Connector[B]").image("https://resource.fs.com/mall/mainImg/20220711182057s9mjl7.jpg").build()).tool(ImageDto.builder().title("FIP").image("https://opticom.bg/images/2/973561890856bbe258abf964e8931f98/fip-400b-mf-usb-2-1550.jpg").build()).criteria(CriteriaDto.builder().criteria(Arrays.asList("IEC 61300-3-35:2022")).build()).build(),
-							MopLineDto.builder().number(2).operation("Measure the Connector[A] with Fiber Inspection Probe[C].").target(ImageDto.builder().title("Connector[B]").image("https://resource.fs.com/mall/mainImg/20220711182057s9mjl7.jpg").build()).tool(ImageDto.builder().title("FIP").image("https://opticom.bg/images/2/973561890856bbe258abf964e8931f98/fip-400b-mf-usb-2-1550.jpg").build()).criteria(CriteriaDto.builder().criteria(Arrays.asList("IEC 61300-3-35:2022")).build()).build(),
+							MopLineDto.builder().operation("Clean the connector[A] with the Connector Cleaner.").target(ImageDto.builder().title("Connector[A]").image("https://resource.fs.com/mall/mainImg/20220711182057s9mjl7.jpg").build()).tool(ImageDto.builder().title("Cleaner").image("https://www.opticfibertool.com/cdn/shop/products/TB14zh3AVY7gK0jSZKzXcmikpXa_400x.jpg?v=1600273777").build()).build(),
+							MopLineDto.builder().operation("Measure the Connector[A] with Fiber Inspection Probe.").target(ImageDto.builder().title("Connector[B]").image("https://resource.fs.com/mall/mainImg/20220711182057s9mjl7.jpg").build()).tool(ImageDto.builder().title("FIP").image("https://opticom.bg/images/2/973561890856bbe258abf964e8931f98/fip-400b-mf-usb-2-1550.jpg").build()).criteria(CriteriaDto.builder().criteria(Arrays.asList("IEC 61300-3-35:2022")).build()).build(),
+							MopLineDto.builder().operation("Measure the Connector[B] with Fiber Inspection Probe.").target(ImageDto.builder().title("Connector[B]").image("https://resource.fs.com/mall/mainImg/20220711182057s9mjl7.jpg").build()).tool(ImageDto.builder().title("FIP").image("https://opticom.bg/images/2/973561890856bbe258abf964e8931f98/fip-400b-mf-usb-2-1550.jpg").build()).criteria(CriteriaDto.builder().criteria(Arrays.asList("IEC 61300-3-35:2022")).build()).build(),
+							MopLineDto.builder().operation("Measure the Connector[C] with Fiber Inspection Probe.").target(ImageDto.builder().title("Connector[B]").image("https://resource.fs.com/mall/mainImg/20220711182057s9mjl7.jpg").build()).tool(ImageDto.builder().title("FIP").image("https://opticom.bg/images/2/973561890856bbe258abf964e8931f98/fip-400b-mf-usb-2-1550.jpg").build()).criteria(CriteriaDto.builder().criteria(Arrays.asList("IEC 61300-3-35:2022")).build()).build(),
+							MopLineDto.builder().operation("Measure the Connector[D] with Fiber Inspection Probe.").target(ImageDto.builder().title("Connector[B]").image("https://resource.fs.com/mall/mainImg/20220711182057s9mjl7.jpg").build()).tool(ImageDto.builder().title("FIP").image("https://opticom.bg/images/2/973561890856bbe258abf964e8931f98/fip-400b-mf-usb-2-1550.jpg").build()).criteria(CriteriaDto.builder().criteria(Arrays.asList("IEC 61300-3-35:2022")).build()).build(),
 
-							MopLineDto.builder().number(3).operation("Connect the Connector[A] of LEFT side to the OTDR[D] and start Test").target(ImageDto.builder().title("Connector[A]").image("https://resource.fs.com/mall/mainImg/20220711182057s9mjl7.jpg").build()).tool(ImageDto.builder().title("OTDR").image("https://www.viavisolutions.com/sites/default/files/styles/d10_scale/public/main-images/smartotdr_with_new_gui.jpg.webp?itok=jTHlzBpP").build()).criteria(CriteriaDto.builder().criteria(Arrays.asList("ORL < -50dB","Total Loss < 1.0dB")).build()).build(),
-							MopLineDto.builder().number(3).operation("Connect the Connector[A] of RIGHT side to the OTDR[D] and start Test").target(ImageDto.builder().title("Connector[A]").image("https://resource.fs.com/mall/mainImg/20220711182057s9mjl7.jpg").build()).tool(ImageDto.builder().title("OTDR").image("https://www.viavisolutions.com/sites/default/files/styles/d10_scale/public/main-images/smartotdr_with_new_gui.jpg.webp?itok=jTHlzBpP").build()).criteria(CriteriaDto.builder().criteria(Arrays.asList("ORL < -50dB","Total Loss < 1.0dB")).build()).build()
+							MopLineDto.builder().operation("Connect the Connector[A] of LEFT side to the OTDR and start Test").target(ImageDto.builder().title("Connector[A]").image("https://resource.fs.com/mall/mainImg/20220711182057s9mjl7.jpg").build()).tool(ImageDto.builder().title("OTDR").image("https://www.viavisolutions.com/sites/default/files/styles/d10_scale/public/main-images/smartotdr_with_new_gui.jpg.webp?itok=jTHlzBpP").build()).criteria(CriteriaDto.builder().criteria(Arrays.asList("ORL < -50dB","Total Loss < 1.0dB")).build()).build(),
+							MopLineDto.builder().operation("Connect the Connector[B] of RIGHT side to the OTDR and start Test").target(ImageDto.builder().title("Connector[A]").image("https://resource.fs.com/mall/mainImg/20220711182057s9mjl7.jpg").build()).tool(ImageDto.builder().title("OTDR").image("https://www.viavisolutions.com/sites/default/files/styles/d10_scale/public/main-images/smartotdr_with_new_gui.jpg.webp?itok=jTHlzBpP").build()).criteria(CriteriaDto.builder().criteria(Arrays.asList("ORL < -50dB","Total Loss < 1.0dB")).build()).build()
 
 								)
 					).build(),
@@ -72,35 +76,15 @@ public class MopRestController {
 						.title("Step 2 ; Fiber Characterization")
 						.images(Arrays.asList("https://www.khrista.co.id/wp-content/uploads/2016/03/iloop.png"))
 						.lines(Arrays.asList(
-							MopLineDto.builder().number(1).operation("Clean the connector[A] with the Connector Cleaner[B].").tool(ImageDto.builder().image("https://www.opticfibertool.com/cdn/shop/products/TB14zh3AVY7gK0jSZKzXcmikpXa_400x.jpg?v=1600273777").build()).build(),
-							MopLineDto.builder().number(2).operation("Measure the Connector[A] with Fiber Inspection Probe[C].").build(),
-							MopLineDto.builder().number(3).operation("Connect the Connector[A] to the OTDR[D] and start Test").build()
-						)
-					).build()
-			)).build(),
-			MopDto.builder()
-			.title("FTTA Service Activation")
-			.category("FTTA")
-			.image("https://www.khrista.co.id/wp-content/uploads/2016/03/rrh-validation.png")
-			.description("Remote Radio Head (RRH) and Baseband Unit (BBU) Validation")
-			.sections(Arrays.asList(
-					MopSectionDto.builder()
-						.title("Step 3 ; Connector Cleanliness")
-						.images(Arrays.asList("https://www.khrista.co.id/wp-content/uploads/2016/03/connector-inspect.png"))
-						.lines(Arrays.asList(
-							MopLineDto.builder().operation("RRH validation using baseband-unit (BBU) emulation with a CPRI protocol analyzer at the specified rate (from base station)").build(),
-							MopLineDto.builder().operation("BBU validation using RRH emulation with a CPRI protocol analyzer at the specified rate (from base station)").build(),
-							MopLineDto.builder().operation("Verification that small form-factor pluggable (SFP) transceivers are installed and connected correctly").build(),
-							MopLineDto.builder().operation("Test at the bottom of the base station, or kilometers away").build()
-						)
-					).build(),
-						MopSectionDto.builder()
-						.title("Step 4 ; Fiber Characterization")
-						.images(Arrays.asList("https://www.khrista.co.id/wp-content/uploads/2016/03/iloop.png"))
-						.lines(Arrays.asList(
-							MopLineDto.builder().operation("Clean the connector[A] with the Connector Cleaner[B].").tool(ImageDto.builder().image("https://www.opticfibertool.com/cdn/shop/products/TB14zh3AVY7gK0jSZKzXcmikpXa_400x.jpg?v=1600273777").build()).build(),
-							MopLineDto.builder().operation("Measure the Connector[A] with Fiber Inspection Probe[C].").build(),
-							MopLineDto.builder().operation("Connect the Connector[A] to the OTDR[D] and start Test").build()
+								MopLineDto.builder().operation("Clean the connector[A] with the Connector Cleaner.").target(ImageDto.builder().title("Connector[A]").image("https://resource.fs.com/mall/mainImg/20220711182057s9mjl7.jpg").build()).tool(ImageDto.builder().title("Cleaner").image("https://www.opticfibertool.com/cdn/shop/products/TB14zh3AVY7gK0jSZKzXcmikpXa_400x.jpg?v=1600273777").build()).build(),
+								MopLineDto.builder().operation("Measure the Connector[A] with Fiber Inspection Probe.").target(ImageDto.builder().title("Connector[B]").image("https://resource.fs.com/mall/mainImg/20220711182057s9mjl7.jpg").build()).tool(ImageDto.builder().title("FIP").image("https://opticom.bg/images/2/973561890856bbe258abf964e8931f98/fip-400b-mf-usb-2-1550.jpg").build()).criteria(CriteriaDto.builder().criteria(Arrays.asList("IEC 61300-3-35:2022")).build()).build(),
+								MopLineDto.builder().operation("Measure the Connector[B] with Fiber Inspection Probe.").target(ImageDto.builder().title("Connector[B]").image("https://resource.fs.com/mall/mainImg/20220711182057s9mjl7.jpg").build()).tool(ImageDto.builder().title("FIP").image("https://opticom.bg/images/2/973561890856bbe258abf964e8931f98/fip-400b-mf-usb-2-1550.jpg").build()).criteria(CriteriaDto.builder().criteria(Arrays.asList("IEC 61300-3-35:2022")).build()).build(),
+								MopLineDto.builder().operation("Measure the Connector[C] with Fiber Inspection Probe.").target(ImageDto.builder().title("Connector[B]").image("https://resource.fs.com/mall/mainImg/20220711182057s9mjl7.jpg").build()).tool(ImageDto.builder().title("FIP").image("https://opticom.bg/images/2/973561890856bbe258abf964e8931f98/fip-400b-mf-usb-2-1550.jpg").build()).criteria(CriteriaDto.builder().criteria(Arrays.asList("IEC 61300-3-35:2022")).build()).build(),
+								MopLineDto.builder().operation("Measure the Connector[D] with Fiber Inspection Probe.").target(ImageDto.builder().title("Connector[B]").image("https://resource.fs.com/mall/mainImg/20220711182057s9mjl7.jpg").build()).tool(ImageDto.builder().title("FIP").image("https://opticom.bg/images/2/973561890856bbe258abf964e8931f98/fip-400b-mf-usb-2-1550.jpg").build()).criteria(CriteriaDto.builder().criteria(Arrays.asList("IEC 61300-3-35:2022")).build()).build(),
+
+								MopLineDto.builder().operation("Connect the Connector[A] of LEFT side to the OTDR and start Test").target(ImageDto.builder().title("Connector[A]").image("https://resource.fs.com/mall/mainImg/20220711182057s9mjl7.jpg").build()).tool(ImageDto.builder().title("OTDR").image("https://www.viavisolutions.com/sites/default/files/styles/d10_scale/public/main-images/smartotdr_with_new_gui.jpg.webp?itok=jTHlzBpP").build()).criteria(CriteriaDto.builder().criteria(Arrays.asList("ORL < -50dB","Total Loss < 1.0dB")).build()).build(),
+								MopLineDto.builder().operation("Connect the Connector[B] of RIGHT side to the OTDR and start Test").target(ImageDto.builder().title("Connector[A]").image("https://resource.fs.com/mall/mainImg/20220711182057s9mjl7.jpg").build()).tool(ImageDto.builder().title("OTDR").image("https://www.viavisolutions.com/sites/default/files/styles/d10_scale/public/main-images/smartotdr_with_new_gui.jpg.webp?itok=jTHlzBpP").build()).criteria(CriteriaDto.builder().criteria(Arrays.asList("ORL < -50dB","Total Loss < 1.0dB")).build()).build()
+
 						)
 					).build()
 			)).build()
@@ -121,6 +105,8 @@ public class MopRestController {
 	@Autowired
 	private UserRepository userRepository;
 	
+	@Autowired
+	private NodeRepository nodeRepository;
 	
 	@GetMapping("/debug/init")
 	public String init() {
@@ -231,7 +217,9 @@ public class MopRestController {
 	//	AtomicInteger i = new AtomicInteger();
 	//	MopDto dto = entityToDto(mopEntity, i);
 		
-		return new ObjectMapper().readValue(mopEntity.getJson(), MopDto.class);
+		MopDto ret = new ObjectMapper().readValue(mopEntity.getJson(), MopDto.class);
+		ret.setId(id);
+		return ret;
 		//return mops.stream().filter(mop -> mop.getId().equals(id)).findFirst().get();
 	}
 
@@ -288,11 +276,31 @@ public class MopRestController {
 		
 	}
 	
+	@DeleteMapping("/mop/{id}")
+	public String delete(Principal principal, @PathVariable("id") Long id) throws Exception {
+		List<NodeEntity> nodes = this.nodeRepository.findByMop_id(id);
+		System.out.println(nodes.size());
+		if (nodes.size() > 0) {
+			String message = "Cannot delete. This is used by " + nodes.stream().map(node -> node.getMop().getName() + ",").collect(Collectors.joining());
+			throw new MopInUseException(message);
+		}
+		try {
+			this.mopRepository.deleteById(id);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "OK";
+	}
+	
 	@PostMapping("/mop/{id}")
 	public String duplicate(Principal principal, @PathVariable("id") Long id, @RequestBody MopDto mop) throws JsonProcessingException {
 		String json = new ObjectMapper().writeValueAsString(mop);
+
 		if (id == -1) {
-			this.mopRepository.save(MopEntity.builder().name(mop.getTitle()).json(json).build());
+			this.mopRepository.save(MopEntity.builder()
+					.name(mop.getTitle())
+					.json(json).build());
 		}
 		else {
 			MopEntity e = this.mopRepository.findById(id).get();
@@ -300,9 +308,28 @@ public class MopRestController {
 			e.setName(mop.getTitle());
 			this.mopRepository.save(e);
 		}
-		
-//		this.dtoToEntity(mop);
 
 		return "OK";
+	}
+	
+	@GetMapping("/mop/publish/{id}")
+	public MopDto publish(Principal principal, @PathVariable("id") Long id) {
+		MopEntity mop = this.mopRepository.findById(id).get();
+		ObjectMapper mapper = new ObjectMapper();
+		
+		try {
+			AtomicInteger count=new AtomicInteger(0);
+			MopDto dto = mapper.readValue(mop.getJson(), MopDto.class);
+			dto.getSections().forEach(section -> section.getLines().forEach(line -> line.setKey(line.getTarget().getTitle().substring(0, 1) + line.getTool().getTitle().substring(0, 1) +  count.incrementAndGet())));
+			mop.setJson(mapper.writeValueAsString(dto));
+			this.mopRepository.save(mop);
+			return dto;
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		return null;
 	}
 }

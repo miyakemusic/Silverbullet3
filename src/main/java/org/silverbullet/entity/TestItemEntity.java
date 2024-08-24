@@ -3,6 +3,7 @@ package org.silverbullet.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -25,12 +26,20 @@ public class TestItemEntity {
 	@Tolerate
 	public TestItemEntity() {}
 	
+	private String item_key;
+	
 	private String name;
 	
-	@ManyToOne
-	 @JoinColumn(name = "node_id")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "node_id")
 	private NodeEntity node;
 	
 	@Enumerated(EnumType.STRING)
 	private TestStatus status;
+	
+	private String tool;
+	
+	private String criteria;
+	
+	private String result;
 }

@@ -1,4 +1,5 @@
 <template>
+	Test Progress (Item)
   <apexchart v-bind="{ options, series }" />
 </template>
 

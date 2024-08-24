@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class MopConfig {
+public class MapperConfig {
 
 	@Bean
 	MopMapper mopMapper() {
@@ -15,4 +15,10 @@ public class MopConfig {
 	NodeMapper nodeMapper() {
 		return new NodeMapper();
 	}
+	
+	@Bean
+	ProjectMapper projectMapper() {
+		return new ProjectMapper();
+	}
+	 
 }

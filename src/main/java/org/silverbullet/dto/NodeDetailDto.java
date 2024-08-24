@@ -16,4 +16,5 @@ public class NodeDetailDto {
 	private String name;
 	private TestPointProgressDto testPointProgress;
 	private List<TestItemDto> testItems;
+	private Long mopid;
 }

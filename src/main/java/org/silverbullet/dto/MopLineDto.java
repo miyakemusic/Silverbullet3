@@ -10,6 +10,8 @@ public class MopLineDto {
 	@Tolerate
 	public MopLineDto() {}
 	
+	private String key;
+	
 	private Integer number;
 	
 	private String operation;

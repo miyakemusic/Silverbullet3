@@ -31,6 +31,11 @@ import convertUrl from './MyUrl.ts'
 import MopListDialog from './MopListDialog.vue';
 
 const props = defineProps(['nodeid'])
+
+const emit = defineEmits<{
+	onMopUpdate: [value: string]
+}>()
+
 const dto = ref({name:'', type:'', mop:{value:''}})
 const open = ref(false)
 const mop = ref()
@@ -64,6 +69,7 @@ function onSelect(id) {
 	axios.get(convertUrl('/api/project/v1/node/' + props.nodeid + '/mop/' + id))
 	.then(function (response) {
 		dto.value = response.data
+		emit('onMopUpdate', id)
 	})
 	.catch(function (error) {
 	  console.log(error);

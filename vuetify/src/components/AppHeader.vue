@@ -8,6 +8,7 @@
 		<v-btn @click="$emit('onMenuChanged', 'asset')">Assets</v-btn>
 		<v-btn @click="$emit('onMenuChanged', 'test')">Test</v-btn>
 		<v-btn @click="$emit('onMenuChanged', 'mop')">MOP</v-btn>
+		<v-btn @click="$emit('onMenuChanged', 'geo')">GEO</v-btn>
 		<v-btn @click="$emit('onMenuChanged', 'regasset')">Equipments</v-btn>
 		<v-btn @click="$emit('onMenuChanged', 'equipment')">Equipments</v-btn>
 	</v-btn-toggle>
@@ -29,21 +30,23 @@
 </template>
 
 <script setup>
-	import { ref } from 'vue'
-	const toggle = ref(0)
+	import { ref , computed} from 'vue'
+//	const toggle = ref(0)
 	const buttons =['home', 'project', 'hr', 'asset']
-	defineEmits(['onMenuChanged'])
+	const emit = (['onMenuChanged'])
+	const props = defineProps(['currentMenu'])
+//	defineExpose({
+//		setSelected,
+//	});
+		
+	const toggle = computed(() => {
+	  return buttons.indexOf(props.currentMenu);
+	})
 	
-	function setSelected(menu) {
-		const id = 		buttons.indexOf(menu);
-		toggle.value = id;
-	}
+//	function setSelected(menu) {
+//		const id = 		buttons.indexOf(menu);
+//		toggle.value = id;
+//	}
 	
-	defineExpose({
-		setSelected,
-	});
-</script>
-
-<script>
 
 </script>

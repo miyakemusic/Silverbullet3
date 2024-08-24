@@ -1,7 +1,7 @@
 <template>
   <v-app>
 	<v-system-bar>
-		<AppHeader ref="header" @onMenuChanged="onMenuChanged" />
+		<AppHeader ref="header" :currentMenu="currentMenu" @onMenuChanged="onMenuChanged" />
 	</v-system-bar>
 	
     <v-main>
@@ -13,9 +13,9 @@
 		<HumanResource v-if="currentMenu=='hr'"></HumanResource>
 		<Asset v-if="currentMenu=='asset'"></Asset>
 		<Home v-if="currentMenu=='home'" @onProjectSelect="onProjectSelect"></Home>
-		<Test v-if="currentMenu=='test'" @onProjectSelect="onProjectSelect"></Test>
-		<Mop v-if="currentMenu=='mop'" @onProjectSelect="onProjectSelect"></Mop>
-		<TreeTest v-if="currentMenu=='treeTest'"></TreeTest>
+		<Test v-if="currentMenu=='test'"></Test>
+		<Mop v-if="currentMenu=='mop'"></Mop>
+		<Geo v-if="currentMenu=='geo'"></Geo>
 		<RegAsset v-if="currentMenu=='regasset'"></RegAsset>
 		<EquipmentManage v-if="currentMenu=='equipment'"></EquipmentManage>
 		
@@ -35,16 +35,17 @@ import HumanResource from './components/HumanResource.vue'
 import Asset from './components/Asset.vue'
 import Home from './components/Home.vue'
 
-const currentMenu = ref('test');
+const currentMenu = ref('home');
 const projectid = ref()
 const header = ref()
+//const activeMenu = ref(0)
 
 function onMenuChanged(menu) {
 	currentMenu.value = menu;
 }
 
 function onProjectSelect(id) {
-	header.value.setSelected('project')
+//	header.value.setSelected('project')
 	currentMenu.value = 'project'
 	projectid.value = id
 }

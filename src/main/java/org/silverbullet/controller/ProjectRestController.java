@@ -33,13 +33,16 @@ import org.silverbullet.entity.NodeEntity;
 import org.silverbullet.entity.ProjectEntity;
 import org.silverbullet.entity.TestItemEntity;
 import org.silverbullet.entity.TestStatus;
+import org.silverbullet.mapper.JsonTestItemConverter;
 import org.silverbullet.mapper.MopMapper;
 import org.silverbullet.mapper.NodeMapper;
+import org.silverbullet.mapper.ProjectMapper;
+import org.silverbullet.mapper.TestItemMapper;
 import org.silverbullet.repository.MopRepository;
 import org.silverbullet.repository.NodeRepository;
 import org.silverbullet.repository.ProjectRepository;
 import org.silverbullet.repository.TestItemRepository;
-import org.silverbullet.dto.ProjectSummaryDto;
+import org.silverbullet.dto.ProjectDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -50,6 +53,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @CrossOrigin(origins = {"http://localhost:3000"})
 @RestController
@@ -73,6 +80,9 @@ public class ProjectRestController {
 	
 	@Autowired
 	private NodeMapper nodeMapper;
+	
+	@Autowired
+	private ProjectMapper projectMapper;
 	
 	@GetMapping("/nodeInfo/{nodeid}")
 	public String nodeInfo(Principal principal, @PathVariable("nodeid") Long nodeid) {
@@ -107,7 +117,7 @@ public class ProjectRestController {
 				projectRepository.save(project);
 				
 		//		List<String> testName = Arrays.asList("FIP@Otemachi", );
-				for (int j = 0; j < 16; j++) {
+				for (int j = 0; j < 8; j++) {
 					NodeEntity fiber = NodeEntity.builder().type("dut").name("Fiber#" + String.format("%03d", j)).parentNode(cable).build();
 					nodeRepository.save(fiber);
 
@@ -248,49 +258,74 @@ public class ProjectRestController {
 	}
 	
 	@GetMapping("/projectSummary/{type}")
-	public List<ProjectSummaryDto> getConstructionSummary(Principal princiapl, @PathVariable("type") String type) {
-//		return projectRepository.findByType(type).stream().map(p -> ProjectSummaryDto.builder().build()).collect(Collectors.toList());
-		
+	public List<ProjectDto> getConstructionSummary(Principal princiapl, @PathVariable("type") String type) {
 		return projectRepository.findByType(type).stream()
-				.map(p -> ProjectSummaryDto.builder()
-						.id(p.getId()).name(p.getName()).description(p.getDescription())
-						.schedule(ScheduleDto.builder().start(p.getStart()).deadline(p.getDeadline()).build())
-						.progress(ProgressDto.builder().type(ProgressDto.Type.delay).days(4).build())
-						.cost(CostDto.builder().budget(p.getBudget()).expenditure(p.getExpenditure()).build())
-						.alarm(AlarmDto.builder().type(AlarmDto.Type.alarm).message("Throughput").build())
-						.build())
+				.map(p -> projectMapper.toDto(p))
 				.collect(Collectors.toList());
 		
 	}
 
+
+	@PostMapping({"/project", "/project/{id}"})
+	public ProjectDto postProjectName(Principal principal, @PathVariable(name="id", required=false) Long id, @RequestBody ProjectDto dto) {
+		ProjectEntity project = null;
+		if (id != null) {
+			project = this.projectRepository.findById(id).get();
+		}
+		else {
+			
+			NodeEntity rootNode = NodeEntity.builder().name("Root").type("node").build();
+			this.nodeRepository.save(rootNode);
+			project = ProjectEntity.builder().node(rootNode).build();
+		}
+		
+		project.setType(dto.getType());
+		project.setName(dto.getName());
+		project.setDescription(dto.getDescription());
+		project.setArea(dto.getArea());
+		
+		if (dto.getSchedule() != null) {
+			project.setStart(dto.getSchedule().getStart());
+			project.setDeadline(dto.getSchedule().getDeadline());
+		}
+		
+		if (dto.getCost() != null) {
+			project.setBudget(dto.getCost().getBudget());
+		}
+		this.projectRepository.save(project);
+		
+		return this.getProject(principal, project.getId());
+	}
+	
+	private JsonTestItemConverter testItemConverter = new JsonTestItemConverter();
+	
 	@GetMapping("/nodeDetail/{nodeid}")
 	public NodeDetailDto nodeDtail(Principal princiapl, @PathVariable("nodeid") Long nodeid) {
 		NodeEntity node = nodeRepository.findById(nodeid).get();
 		TestItemCollector collector = new TestItemCollector(nodeRepository, testItemRepository, nodeid);
 		List<TestItemDto> testItems = collector.getTestItems();
-		
-		return NodeDetailDto.builder()
+
+		NodeDetailDto ret = NodeDetailDto.builder()
 				.name(node.getName())
 				.testPointProgress(	collector.progress())
-				.testItems(testItems)
-//				.testItems(testItems.stream().map(
-//						t -> TestItemDto.builder().id(t.getId()).name(t.getName()).status(t.getStatus().name()).node(t.getNode()).build())
-//						.collect(Collectors.toList()))
+				.testItems( testItems)
+				.mopid(node.getMop() != null ? node.getMop().getId() : null)
 				.build();
+		
+		return ret;
 	}
 	
 	@GetMapping("/project/{id}")
-	public ProjectSummaryDto getProject(Principal princiapl, @PathVariable("id") Long id) {		
+	public ProjectDto getProject(Principal princiapl, @PathVariable("id") Long id) {		
 		return projectRepository.findById(id).map(
-				p -> ProjectSummaryDto.builder()
-				.id(p.getId()).name(p.getName()).description(p.getDescription())
-				.schedule(ScheduleDto.builder().start(p.getStart()).deadline(p.getDeadline()).build())
-				.progress(ProgressDto.builder().type(ProgressDto.Type.delay).days(4).build())
-				.cost(CostDto.builder().budget(p.getBudget()).expenditure(p.getExpenditure()).build())
-				.alarm(AlarmDto.builder().type(AlarmDto.Type.alarm).message("Throughput").build())
-				.build()).get();
+				p -> projectMapper.toDto(p)).get();
 	}
 	
+	@DeleteMapping("/project/{id}")
+	public String deleteProject(Principal princiapl, @PathVariable("id") Long id) {		
+		this.projectRepository.deleteById(id);
+		return "OK";
+	}
 	
 	@GetMapping("/progress")
 	public TestPointProgressDto testItemProgress(Principal princiapl, @RequestParam(required=false, name="projectid") Long projectid, @RequestParam(required=false, name="nodeid") Long nodeid) {
@@ -344,6 +379,16 @@ public class ProjectRestController {
 		return collector.getProgresses();
 	}
 
+	@GetMapping("/testItems")
+	public List<TestItemDto> testItems(Principal princiapl) {
+		MopEntity mop = this.mopRepository.findAll().get(0);
+		
+		List<TestItemDto> ret = new TestItemMapper().toDto(new JsonTestItemConverter().testItems(mop.getJson()));
+		
+		ret.stream().filter(t -> t.getKey() == null).forEach(t -> t.setKey("Key"));
+		
+		return ret;
+	}
 	
 	@PostMapping("/childNode/{parentid}")
 	public String childNode(Principal princiapl, @PathVariable("parentid") Long parentid, @RequestBody NodeDto dto) {
@@ -361,7 +406,8 @@ public class ProjectRestController {
 	public NodeDto getNode(Principal princiapl, @PathVariable("id") Long id) {
 		NodeEntity node = this.nodeRepository.findById(id).get();
 		
-		return nodeMapper.toDto(node);
+		NodeDto dto = nodeMapper.toDto(node);
+		return dto;
 	}
 	
 	@PostMapping("/node/{id}")
@@ -374,21 +420,29 @@ public class ProjectRestController {
 		return "OK";
 	}
 	
-	@GetMapping("/node/{id}/mop/{mopid}")
-	public NodeDto nodeMop(Principal princiapl, @PathVariable("id") Long id, @PathVariable("mopid") Long mopid) {
-		NodeEntity entity = this.nodeRepository.findById(id).get();
-		MopEntity mop = this.mopRepository.findById(mopid).get();
-		entity.setMop(mop);
-		
-		this.nodeRepository.save(entity);
-		return nodeMapper.toDto(entity);
-	}
-	
 	@DeleteMapping("/node/{id}")
 	public String deleteNode(Principal princiapl, @PathVariable("id") Long id) {
-//		NodeEntity node = this.nodeRepository.findById(id).get();
+//		this.testItemRepository.deleteByNode_id(id);
 		
 		this.nodeRepository.deleteById(id);
 		return "OK";
 	}
+	
+	@GetMapping("/node/{id}/mop/{mopid}")
+	public NodeDto nodeMop(Principal princiapl, @PathVariable("id") Long id, @PathVariable("mopid") Long mopid) throws JsonMappingException, JsonProcessingException {
+		NodeEntity node = this.nodeRepository.findById(id).get();
+		MopEntity mop = this.mopRepository.findById(mopid).get();
+		node.setMop(mop);
+	
+//		MopDto mopDto = new ObjectMapper().readValue( mop.getJson(), MopDto.class);
+
+//		List<TestItemEntity> testItems = mopDto.getSections().stream().flatMap(section -> section.getLines().stream()).filter(line -> line.getTarget() != null).map(line -> TestItemEntity.builder().id(id).name(line.getTarget().getTitle()).node(node).status(TestStatus.NOT_YET).build()) .collect(Collectors.toList());
+//		this.testItemRepository.deleteByNode_id(id);
+		
+		this.nodeRepository.save(node);
+//		this.testItemRepository.saveAll(testItems);
+		
+		return nodeMapper.toDto(node);
+	}
+
 }

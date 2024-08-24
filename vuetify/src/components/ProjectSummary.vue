@@ -1,13 +1,21 @@
 <template>
-	  <v-card width="800" variant="outlined" class="ma-2">
-	    <v-card-title>
-	      Construction Status
-	    </v-card-title>
-	
-	    <v-divider></v-divider>
+	  <v-card variant="outlined" class="ma-2">
+		<template v-slot:title>
+			<v-row>
+				<v-col>
+					{{ props.title }}
+				</v-col>
+				<v-col cols="4">
+					<v-text-field label="Search" v-model="search"></v-text-field>
+				</v-col>
+				<v-col cols="2">
+					<v-btn @click="onAddNew">Add New</v-btn>
+				</v-col>
+			</v-row>
+		</template>
 	    <v-data-table 
 			:headers="headers" 
-			v-model:search="search" :items="items" hide-default-footer @click:row="handleClick">
+			v-model:search="search" :items="items"  @click:row="handleClick">
 <!--			<template v-slot:item.name="{ item }">
 				<v-btn 	@click="$emit('onProjectSelect', [`${item.id}`])"
 				  :text="item.name"
@@ -52,11 +60,11 @@
 			<template v-slot:item.cost="{ item }">
 			  <div class="text-end">
 				<v-chip label size="small" variant="text"
-				  :text="'Used: ' + item.cost.unit + item.cost.expenditure"
+				  :text="'Used: ' + item.cost.expenditure + ' ' + item.cost.unit"
 				></v-chip>
 				<br>
 				<v-chip label size="small" variant="text"
-				  :text="'Budget: ' + item.cost.unit + item.cost.budget"
+				  :text="'Budget: ' + item.cost.budget + ' ' + item.cost.unit"
 				></v-chip>
 			  </div>
 			</template>
@@ -79,7 +87,7 @@
 </template>
 
 <script setup>
-  import { ref } from 'vue'
+  import { ref, onMounted } from 'vue'
   import axios from 'axios'
   import convertUrl from './MyUrl.ts'
   const color = ref({
@@ -87,11 +95,11 @@
     warning: 'yellow',
   error: 'red'
   })
-  const props = defineProps(['headers', 'url'])
+  const props = defineProps(['headers', 'url', 'title'])
   const emit = defineEmits(['onProjectSelect'])
   const search = ref('')
   const items = ref()
-
+  const title = ref(props.title)
   const headers =   props.headers;
 /*  
   const headers = [
@@ -103,20 +111,39 @@
 	{ title: 'Cost', value: 'cost' }
   ]
 */
+	onMounted(() => {
+		retreive()
+	});
+
   function handleClick(event, row) {
 	const id = row.item.id;
 	emit('onProjectSelect', id);
   }
   
-  axios.get(convertUrl(props.url))
-  .then(function (response) {
-  	items.value = response.data;
-  })
-  .catch(function (error) {
-    console.log(error);
-  })
-  .finally(function () {
-  });	
+  function onAddNew() {
+	const obj = {name: 'New Project', type: 'Construction', description: 'descritpion', area: 'area' }
+	axios.post(convertUrl("/api/project/v1/project")	, obj)
+	.then(function (response) {
+		retreive()
+	})
+	.catch(function (error) {
+	  console.log(error);
+	})
+	.finally(function () {
+	});	
+  }
+  
+  function retreive() {
+	  axios.get(convertUrl(props.url))
+	  .then(function (response) {
+	  	items.value = response.data;
+	  })
+	  .catch(function (error) {
+	    console.log(error);
+	  })
+	  .finally(function () {
+	  });
+  }	
 </script>
 
 <script>
