@@ -1,5 +1,4 @@
 <template>
-
 	<v-navigation-drawer permanent>
 		<MopNavigation :mop="mop" @on-list="onList" @on-edit="onEdit" @on-view="onView"></MopNavigation>
 	</v-navigation-drawer>

@@ -379,15 +379,21 @@ public class ProjectRestController {
 		return collector.getProgresses();
 	}
 
-	@GetMapping("/testItems")
-	public List<TestItemDto> testItems(Principal princiapl) {
-		MopEntity mop = this.mopRepository.findAll().get(0);
-		
-		List<TestItemDto> ret = new TestItemMapper().toDto(new JsonTestItemConverter().testItems(mop.getJson()));
-		
-		ret.stream().filter(t -> t.getKey() == null).forEach(t -> t.setKey("Key"));
-		
-		return ret;
+	@GetMapping({"/testItems", "/testItems/{projectid}"})
+	public List<TestItemDto> testItems(Principal princiapl, @PathVariable(required=false, name="projectid") Long projectid) {
+		if (projectid == null) {
+			MopEntity mop = this.mopRepository.findAll().get(0);
+			
+			List<TestItemDto> ret = new TestItemMapper().toDto(new JsonTestItemConverter().testItems(mop.getJson()));
+			
+			ret.stream().filter(t -> t.getKey() == null).forEach(t -> t.setKey("Key"));
+			
+			return ret;
+		}
+		else {
+			ProjectEntity projectEntity = this.projectRepository.findById(projectid).get();
+			return new TestItemCollector(nodeRepository, testItemRepository, projectEntity.getNode().getId()).getTestItems();
+		}
 	}
 	
 	@PostMapping("/childNode/{parentid}")

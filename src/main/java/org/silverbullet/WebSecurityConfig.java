@@ -16,7 +16,7 @@ public class WebSecurityConfig {
 		http
 			.authorizeHttpRequests((requests) -> requests
 				.requestMatchers("/", "/index.html", "/webjars/**", "/assets/**", "/favicon.ico",
-						"/api/**").permitAll()
+						"/api/**", "/mop/**").permitAll()
 				.anyRequest().authenticated()
 				
 			)

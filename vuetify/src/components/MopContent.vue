@@ -1,3 +1,8 @@
+<style scoped>
+.v-data-table {
+  white-space: pre-line;
+}
+</style>
 <template>
 	<div v-if="mop != null">
 		<v-btn @click="publish">Publish</v-btn>
@@ -13,7 +18,7 @@
 			</v-img>
 			
 		</v-card>
-		<v-card  :title="section.title" v-for="section in mop.sections">
+		<v-card :title="section.title" v-for="section in mop.sections">
 			
 			<v-row>
 				<v-col v-for="image in section.images">
@@ -28,7 +33,7 @@
 			</v-row>
 			
 	
-			<v-data-table
+			<v-data-table 			tableStyle="min-width: 50rem"
 			  :items="section.lines"
 			  :items-per-page="50"
 			  class="elevation-1 my-3 mx-auto"
@@ -36,15 +41,14 @@
 			>
 			
 				<template v-slot:item.operation="{item}">
-					<v-label :text="item.operation">			
-						
-					</v-label>
+					{{ item.operation }}
+
 				</template>
 				
 				<template v-slot:item.tool="{ item }" >
 					<div v-if="item.tool != null">
-						<v-label v-if="item.tool.title != null" :text="item.tool.title"></v-label>
 						
+						{{ item.tool.title }}
 						<v-img  v-if="item.tool.image != null"
 								:src="item.tool.image" 
 						       :aspect-ratop="16/9" 
@@ -59,8 +63,7 @@
 				 
 				 <template v-slot:item.target="{ item }" >
 					 <div v-if="item.target != null">
-					 	<v-label v-if="item.target.title != null" :text="item.target.title"></v-label>
-					 	
+					 	{{ item.target.title }}
 					 	<v-img  v-if="item.target.image != null"
 					 			:src="item.target.image" 
 					 	       :aspect-ratop="16/9" 
@@ -75,11 +78,7 @@
 				 
 				 <template v-slot:item.criteria="{ item }" >
 					<v-row v-if="item.criteria != null" v-for="criteria in item.criteria.criteria">
-						<v-label 
-							:text="criteria">
-						
-						</v-label>
-						
+						{{ item.criteria.criteria }}						
 					</v-row>
 				 </template>
 			</v-data-table>

@@ -6,9 +6,9 @@
 
 // Plugins
 import { registerPlugins } from '@/plugins'
-
+import router from '@/router'
 // Components
-import App from './App.vue'
+import App from '@/App.vue'
 
 // Composables
 import { createApp } from 'vue'
@@ -21,7 +21,7 @@ const app = createApp(App)
 
 app.use(VueApexCharts)
 app.use(JsonEditorPlugin)
-
+app.use(router)
 
 registerPlugins(app)
 //app.component('VueDatePicker', VueDatePicker);
