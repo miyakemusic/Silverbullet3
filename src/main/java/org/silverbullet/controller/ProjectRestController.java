@@ -5,34 +5,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.silverbullet.TestItemCollector;
 import org.silverbullet.TestItemSummaryCollector;
 import org.silverbullet.TreeConverter;
 import org.silverbullet.VuetifyTree;
-import org.silverbullet.dto.AlarmDto;
-import org.silverbullet.dto.CostDto;
-import org.silverbullet.dto.ImageDto;
 import org.silverbullet.dto.MopDto;
-import org.silverbullet.dto.MopLineDto;
-import org.silverbullet.dto.MopSectionDto;
-import org.silverbullet.dto.MopSummary;
 import org.silverbullet.dto.NodeDto;
 import org.silverbullet.dto.ProgressHistoryDto;
 import org.silverbullet.dto.NodeDetailDto;
-import org.silverbullet.dto.PairDto;
 import org.silverbullet.dto.ProgressDto;
 import org.silverbullet.dto.ProgressDto.Type;
-import org.silverbullet.dto.ScheduleDto;
 import org.silverbullet.dto.TestItemDto;
 import org.silverbullet.dto.TestPointProgressDto;
+import org.silverbullet.dto.TestResultDto;
 import org.silverbullet.entity.MopEntity;
 import org.silverbullet.entity.NodeEntity;
 import org.silverbullet.entity.ProjectEntity;
-import org.silverbullet.entity.TestItemEntity;
-import org.silverbullet.entity.TestStatus;
+import org.silverbullet.entity.TestResultEntity;
 import org.silverbullet.mapper.JsonTestItemConverter;
 import org.silverbullet.mapper.MopMapper;
 import org.silverbullet.mapper.NodeMapper;
@@ -41,14 +32,16 @@ import org.silverbullet.mapper.TestItemMapper;
 import org.silverbullet.repository.MopRepository;
 import org.silverbullet.repository.NodeRepository;
 import org.silverbullet.repository.ProjectRepository;
-import org.silverbullet.repository.TestItemRepository;
+import org.silverbullet.repository.TestResultRepository;
 import org.silverbullet.dto.ProjectDto;
+import org.silverbullet.dto.ProjectMopSummaryDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -68,9 +61,6 @@ public class ProjectRestController {
 	
 	@Autowired
 	private ProjectRepository projectRepository;
-	
-	@Autowired
-	private TestItemRepository testItemRepository;
 	
 	@Autowired
 	private MopRepository mopRepository;
@@ -122,16 +112,7 @@ public class ProjectRestController {
 					nodeRepository.save(fiber);
 
 					int max = (int)(Math.random() * 10) + 1;
-					for (int k = 0; k < max; k++) {
-						TestItemEntity testItem = TestItemEntity.builder().name("TestItem#" + k).node(fiber).status(randStatus()).build();
-						testItemRepository.save(testItem);
-					}
 					
-//					nodeRepository.save(NodeEntity.builder().type("testPoint").name("Port A").parentNode(fiber).build());
-//					nodeRepository.save(NodeEntity.builder().type("testPoint").name("Port B").parentNode(fiber).build());
-//					nodeRepository.save(NodeEntity.builder().type("testPoint").name("Link A->B").parentNode(fiber).build());
-//					nodeRepository.save(NodeEntity.builder().type("testPoint").name("Link B->A").parentNode(fiber).build());
-//					nodeRepository.save(NodeEntity.builder().type("testPoint").name("Link").parentNode(fiber).build());
 				}
 			}
 		}
@@ -170,16 +151,6 @@ public class ProjectRestController {
 							
 				nodeRepository.save(fiber);
 				
-				for (int k = 0; k < 4; k++) {
-					TestItemEntity testItem = TestItemEntity.builder().name("TestItem#" + k).node(fiber).status(randStatus()).build();
-					testItemRepository.save(testItem);
-				}
-
-//				nodeRepository.save(NodeEntity.builder().type("testPoint").name("Port A").parentNode(fiber).build());
-//				nodeRepository.save(NodeEntity.builder().type("testPoint").name("Port B").parentNode(fiber).build());
-//				nodeRepository.save(NodeEntity.builder().type("testPoint").name("Link A->B").parentNode(fiber).build());
-//				nodeRepository.save(NodeEntity.builder().type("testPoint").name("Link B->A").parentNode(fiber).build());
-//				nodeRepository.save(NodeEntity.builder().type("testPoint").name("Link").parentNode(fiber).build());
 			}
 //			nodeRepository.save(root);
 		}
@@ -209,31 +180,12 @@ public class ProjectRestController {
 				for (int j = 0; j < 8; j++) {
 					NodeEntity fiber = NodeEntity.builder().type("dut").name("Fiber#" + String.format("%03d", j)).parentNode(cable).build();
 					nodeRepository.save(fiber);
-
-					for (int k = 0; k < 4; k++) {
-						TestItemEntity testItem = TestItemEntity.builder().name("TestItem#" + k).node(fiber).status(randStatus()).build();
-						testItemRepository.save(testItem);
-					}
-//					nodeRepository.save(NodeEntity.builder().type("testPoint").name("Port A").parentNode(fiber).build());
-//					nodeRepository.save(NodeEntity.builder().type("testPoint").name("Port B").parentNode(fiber).build());
-//					nodeRepository.save(NodeEntity.builder().type("testPoint").name("Link A->B").parentNode(fiber).build());
-//					nodeRepository.save(NodeEntity.builder().type("testPoint").name("Link B->A").parentNode(fiber).build());
-//					nodeRepository.save(NodeEntity.builder().type("testPoint").name("Link").parentNode(fiber).build());
 				}
 			}
 		}
 		return "OK";
 	}
 	
-	private TestStatus randStatus() {
-		Random rand = new Random();
-	    int num = rand.nextInt(3);
-	    
-	    TestStatus s = TestStatus.values()[num];
-	    
-		return s;
-	}
-
 	@GetMapping("/tree/{id}")
 	public List<VuetifyTree> vuetifyTree(Principal princiapl, @PathVariable("id") String id) {
 		NodeEntity rootNode = projectRepository.findById(Long.valueOf(id)).get().getNode();
@@ -297,12 +249,10 @@ public class ProjectRestController {
 		return this.getProject(principal, project.getId());
 	}
 	
-	private JsonTestItemConverter testItemConverter = new JsonTestItemConverter();
-	
 	@GetMapping("/nodeDetail/{nodeid}")
 	public NodeDetailDto nodeDtail(Principal princiapl, @PathVariable("nodeid") Long nodeid) {
 		NodeEntity node = nodeRepository.findById(nodeid).get();
-		TestItemCollector collector = new TestItemCollector(nodeRepository, testItemRepository, nodeid);
+		TestItemCollector collector = new TestItemCollector(nodeRepository, nodeid);
 		List<TestItemDto> testItems = collector.getTestItems();
 
 		NodeDetailDto ret = NodeDetailDto.builder()
@@ -332,7 +282,7 @@ public class ProjectRestController {
 		if (nodeid == null) {
 			nodeid = this.projectRepository.findById(projectid).get().getNode().getId();
 		}
-		TestItemCollector collector = new TestItemCollector(nodeRepository, testItemRepository, nodeid);
+		TestItemCollector collector = new TestItemCollector(nodeRepository, nodeid);
 
 		return collector.progress();
 	}
@@ -374,7 +324,7 @@ public class ProjectRestController {
 		if (nodeid == null) {
 			nodeid = this.projectRepository.findById(projectid).get().getNode().getId();
 		}
-		TestItemSummaryCollector collector = new TestItemSummaryCollector(nodeRepository, testItemRepository, nodeid);
+		TestItemSummaryCollector collector = new TestItemSummaryCollector(nodeRepository, nodeid);
 
 		return collector.getProgresses();
 	}
@@ -392,7 +342,7 @@ public class ProjectRestController {
 		}
 		else {
 			ProjectEntity projectEntity = this.projectRepository.findById(projectid).get();
-			return new TestItemCollector(nodeRepository, testItemRepository, projectEntity.getNode().getId()).getTestItems();
+			return new TestItemCollector(nodeRepository, projectEntity.getNode().getId()).getTestItems();
 		}
 	}
 	
@@ -434,21 +384,76 @@ public class ProjectRestController {
 		return "OK";
 	}
 	
-	@GetMapping("/node/{id}/mop/{mopid}")
-	public NodeDto nodeMop(Principal princiapl, @PathVariable("id") Long id, @PathVariable("mopid") Long mopid) throws JsonMappingException, JsonProcessingException {
+	@PutMapping("/node/{id}/mop")
+	public NodeDto nodeMop(Principal princiapl, @PathVariable("id") Long id, @RequestBody MopDto mopDto) throws JsonMappingException, JsonProcessingException {
 		NodeEntity node = this.nodeRepository.findById(id).get();
-		MopEntity mop = this.mopRepository.findById(mopid).get();
+		MopEntity mop = this.mopRepository.findById(mopDto.getId()).get();
 		node.setMop(mop);
 	
-//		MopDto mopDto = new ObjectMapper().readValue( mop.getJson(), MopDto.class);
-
-//		List<TestItemEntity> testItems = mopDto.getSections().stream().flatMap(section -> section.getLines().stream()).filter(line -> line.getTarget() != null).map(line -> TestItemEntity.builder().id(id).name(line.getTarget().getTitle()).node(node).status(TestStatus.NOT_YET).build()) .collect(Collectors.toList());
-//		this.testItemRepository.deleteByNode_id(id);
-		
 		this.nodeRepository.save(node);
-//		this.testItemRepository.saveAll(testItems);
 		
 		return nodeMapper.toDto(node);
 	}
 
+	@Autowired
+	private TestResultRepository testResultRepository;
+	
+	@GetMapping("/node/{nodeid}/mop")
+	public MopDto getNodeMop(Principal princiapl, @PathVariable("nodeid") Long nodeid) throws JsonMappingException, JsonProcessingException {
+		NodeEntity nodeEntity = nodeRepository.findById(nodeid).get();
+		MopDto ret = new ObjectMapper().readValue(nodeEntity.getMop().getJson(), MopDto.class);
+		
+		ret.getSections().forEach(s -> s.getLines().forEach(l -> {
+			List<TestResultEntity> results = testResultRepository.findByNodeidAndMopItemKey(nodeid, l.getKey());
+			if (results != null) {
+				results.forEach(r -> 
+					{
+						l.setResult(r.getJson());
+						l.setStatus(r.getStatus());
+					});
+			}
+		}));
+		return ret;
+	}
+	
+	@GetMapping("/mops/{projectid}")
+	public List<ProjectMopSummaryDto> getMops(Principal princiapl, @PathVariable("projectid") Long projectid) {
+		ProjectEntity project = this.projectRepository.findById(projectid).get();
+		NodeEntity projectNode = project.getNode();
+
+		// Assume two-layered
+		// This must be refactored to support any number of layers
+		List<ProjectMopSummaryDto> ret = new ArrayList<>();
+		
+		for (NodeEntity child : projectNode.getChildren()) {
+			//List<String> path = new ArrayList<>();
+			String parentName = child.getName();
+			for (NodeEntity grandChild : child.getChildren()) {
+				//path.add(grandChild.getName());
+				
+				ret.add(ProjectMopSummaryDto.builder()
+					.mopid(grandChild.getMop().getId())
+					.name(grandChild.getMop().getName())
+					.nodeid(grandChild.getId())
+					.path(Arrays.asList(parentName, grandChild.getName()))
+					
+					.build());
+			}
+		}
+		return ret;
+		//return projectNode.getChildren().stream().flatMap(n -> n.getChildren().stream()).map(n2 -> 
+		//	ProjectMopSummary.builder().nodeid(n2.getId()).mopid(n2.getMop().getId()).path(Arrays.asList(n2.getName())).name(n2.getMop().getName()).build()).collect(Collectors.toList());
+	}
+	
+	
+	@PostMapping("/testResult")
+	public TestResultDto postResult(Principal principal, @RequestBody TestResultDto result) {
+		
+		result.getItems().forEach(item -> {
+			testResultRepository.save(TestResultEntity.builder().nodeid(item.getNodeid()).mopItemKey(item.getKey()).json(item.getValue()).status(item.getStatus()).build());
+		});
+		
+		return result;
+	}
+	
 }

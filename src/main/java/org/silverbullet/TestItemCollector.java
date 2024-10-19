@@ -2,9 +2,6 @@ package org.silverbullet;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import org.silverbullet.dto.MopDto;
 import org.silverbullet.dto.TestItemDto;
 import org.silverbullet.dto.TestPointProgressDto;
 import org.silverbullet.entity.NodeEntity;
@@ -12,11 +9,6 @@ import org.silverbullet.entity.TestItemEntity;
 import org.silverbullet.entity.TestStatus;
 import org.silverbullet.mapper.JsonTestItemConverter;
 import org.silverbullet.repository.NodeRepository;
-import org.silverbullet.repository.TestItemRepository;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import lombok.Getter;
 
 @Getter
@@ -28,8 +20,7 @@ public class TestItemCollector {
 	
 	private JsonTestItemConverter testItemConverter = new JsonTestItemConverter();
 	
-	public TestItemCollector(NodeRepository nodeRepository, TestItemRepository testItemRepository, Long nodeid) {
-//		this.testItemRepository = testItemRepository;
+	public TestItemCollector(NodeRepository nodeRepository, Long nodeid) {
 		rootNode = nodeRepository.findById(nodeid).get();
 		
 		colleceRecursive(rootNode);

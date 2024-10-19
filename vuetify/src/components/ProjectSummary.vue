@@ -101,16 +101,7 @@
   const items = ref()
   const title = ref(props.title)
   const headers =   props.headers;
-/*  
-  const headers = [
-    { title: 'Name', value: 'name' },
-    { title: 'Description', value: 'description' },
-	{ title: 'Location', value: 'location' },
-    { title: 'Schedule', value: 'schedule' },
-    { title: 'Progress', value: 'progress' },
-	{ title: 'Cost', value: 'cost' }
-  ]
-*/
+
 	onMounted(() => {
 		retreive()
 	});

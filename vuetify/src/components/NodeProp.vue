@@ -65,8 +65,9 @@ function retrieve() {
 }
 
 function onSelect(id) {
-	mop.value = id
-	axios.get(convertUrl('/api/project/v1/node/' + props.nodeid + '/mop/' + id))
+	mop.value = id;
+	const json = {'id': id}
+	axios.put(convertUrl('/api/project/v1/node/' + props.nodeid + '/mop/'), json)
 	.then(function (response) {
 		dto.value = response.data
 		emit('onMopUpdate', id)

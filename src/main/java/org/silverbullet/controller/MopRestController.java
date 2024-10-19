@@ -1,29 +1,20 @@
 package org.silverbullet.controller;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-
 import org.silverbullet.dto.CriteriaDto;
 import org.silverbullet.dto.ImageDto;
 import org.silverbullet.dto.MopDto;
 import org.silverbullet.dto.MopLineDto;
 import org.silverbullet.dto.MopSectionDto;
 import org.silverbullet.dto.MopSummary;
-import org.silverbullet.dto.PairDto;
 import org.silverbullet.entity.MopEntity;
 import org.silverbullet.entity.NodeEntity;
-import org.silverbullet.entity.TestItemEntity;
-import org.silverbullet.entity.UserEntity;
-import org.silverbullet.entity.trash.MopLineEntity;
-import org.silverbullet.entity.trash.MopSectionEntity;
-import org.silverbullet.entity.trash.RelationMopUserEntity;
 import org.silverbullet.repository.MopRepository;
 import org.silverbullet.repository.NodeRepository;
-import org.silverbullet.repository.TestItemRepository;
 import org.silverbullet.repository.UserRepository;
 import org.silverbullet.repository.trash.MopLineRepository;
 import org.silverbullet.repository.trash.MopSectionRepository;
@@ -212,11 +203,8 @@ public class MopRestController {
 //	}
 	
 	@GetMapping("/mops/{id}")
-	public MopDto mops(Principal principal, @PathVariable(name="id") Long id) throws JsonMappingException, JsonProcessingException {
+	public MopDto mops(Principal principal, @PathVariable("id") Long id) throws JsonMappingException, JsonProcessingException {
 		MopEntity mopEntity = mopRepository.findById(id).get();
-	//	AtomicInteger i = new AtomicInteger();
-	//	MopDto dto = entityToDto(mopEntity, i);
-		
 		MopDto ret = new ObjectMapper().readValue(mopEntity.getJson(), MopDto.class);
 		ret.setId(id);
 		return ret;
@@ -293,8 +281,21 @@ public class MopRestController {
 		return "OK";
 	}
 	
+	Integer index = 0;
 	@PostMapping("/mop/{id}")
 	public String duplicate(Principal principal, @PathVariable("id") Long id, @RequestBody MopDto mop) throws JsonProcessingException {
+		String key = "";
+		
+		//mop.getSections().forEach(sec -> sec.getLines().forEach(line -> line.setKey("K" + index++)));
+		
+		//IntStream.range(0, mop.getSections().size()).forEach(indexSection -> mop.getSections().get(indexSection).getLines().forEach(line -> line.getClass()));
+		
+		for (int section = 0; section < mop.getSections().size(); section++) {
+			MopSectionDto sectionDto = mop.getSections().get(section);
+			for (int line = 0; line < sectionDto.getLines().size(); line++) {
+				sectionDto.getLines().get(line).setKey(String.valueOf(section + 1) + "-" +  String.valueOf(line + 1));
+			}
+		}
 		String json = new ObjectMapper().writeValueAsString(mop);
 
 		if (id == -1) {

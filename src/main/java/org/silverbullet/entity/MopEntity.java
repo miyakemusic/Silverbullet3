@@ -42,19 +42,4 @@ public class MopEntity {
 	
 	@Column(length=10485760)
 	private String json;
-	
-//	public List<TestItemEntity> testItems() {
-//		try {
-//			MopDto dto = new ObjectMapper().readValue(json, MopDto.class);
-//			return dto.getSections().stream().flatMap(sec -> sec.getLines().stream()).map(line -> TestItemEntity.builder()
-//					.name(line.getTarget() != null ? line.getTarget().getTitle() : "")
-//					.status(TestStatus.NOT_YET)
-//					
-//					.build()).collect(Collectors.toList());
-//		} catch (JsonProcessingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		return new ArrayList<>();
-//	}
 }

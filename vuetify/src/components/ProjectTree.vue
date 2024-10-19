@@ -13,7 +13,7 @@
 	item-value="id"
 	activatable
 	hoverable
-	open-on-click
+
 	return-object
 	@click:select="onNodeClicked"
 	@update:open="onNodeClicked"
@@ -44,9 +44,8 @@
   const props = defineProps(['projectid'])
   const active = ref([])
   const files = ref({
-    html: 'mdi-language-html5',
-    js: 'mdi-nodejs',
     dut: 'mdi-switch',
+	node: 'mdi-folder',
     testPoint: 'mdi-connection',
     pdf: 'mdi-file-pdf-box',
     png: 'mdi-file-image',
@@ -109,12 +108,12 @@
   function onNodeClicked(item) {
 	var id = item[0]//.id;
 	if (id != null) {
-		current.value = id
+		current.value = id.id
 	}
 	else {
 		//current.value = 	
 	}
-	emit('onNodeSelect', id)
+	emit('onNodeSelect', current.value)
   }
   
   function onAddNode() {

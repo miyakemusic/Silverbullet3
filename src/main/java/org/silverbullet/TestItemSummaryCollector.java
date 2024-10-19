@@ -15,34 +15,14 @@ public class TestItemSummaryCollector {
 
 	private List<TestPointProgressDto> progresses = new ArrayList<>();
 	
-	public TestItemSummaryCollector(NodeRepository nodeRepository, TestItemRepository testItemRepository, Long nodeid) {
+	public TestItemSummaryCollector(NodeRepository nodeRepository, Long nodeid) {
 
 		NodeEntity node = nodeRepository.findById(nodeid).get();
-	
-//		{
-//			TestItemCollector collector = new TestItemCollector(nodeRepository, testItemRepository, node.getId());
-//			TestPointProgressDto progress = collector.progress();
-//			progresses.add(progress);
-//		}
 		
 		for (NodeEntity subNode : node.getChildren()) {
-//			List<TestPointProgressDto> progresses = new ArrayList<>();
-//			lookInto(subNode, progresses);
-			
-			TestItemCollector collector = new TestItemCollector(nodeRepository, testItemRepository, subNode.getId());
+			TestItemCollector collector = new TestItemCollector(nodeRepository, subNode.getId());
 			TestPointProgressDto progress = collector.progress();
 			progresses.add(progress);
-		}
-		
-		
-
-	}
-	private void lookInto(NodeEntity node, List<TestPointProgressDto> progresses2) {
-		
-		
-		for (NodeEntity subNode : node.getChildren()) {
-			
-			lookInto(subNode, progresses);
 		}
 	}
 }
