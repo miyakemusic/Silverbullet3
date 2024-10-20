@@ -46,18 +46,6 @@ dependencies {
 //	classpath "com.moowork.gradle:gradle-node-plugin:1.2.0"
 }
 
-/*
-task npmRunBuild() {
-    if (!file("${rootDir}/vuetify/node_modules").exists()) {
-        "npm --prefix ${rootDir}/vuetify install ${rootDir}/vuetify"
-                .execute()
-                .waitForProcessOutput(System.out, System.err)
-    }
-    "npm --prefix ${rootDir}/vuetify run build"
-            .execute()
-            .waitForProcessOutput(System.out, System.err)
-}*/
-
 
 tasks.named('test') {
 	useJUnitPlatform()
